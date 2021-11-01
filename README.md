@@ -1,1 +1,1 @@
-# costomer-single-view
+# customer-single-view
