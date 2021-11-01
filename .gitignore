@@ -24,3 +24,5 @@ hs_err_pid*
 
 /terraform.tfvars
 /.idea
+/terraform.tfstate
+/.terraform.lock.hcl
