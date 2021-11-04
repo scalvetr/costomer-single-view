@@ -1,0 +1,17 @@
+@startgantt
+'https://plantuml.com/gantt-diagram
+
+saturday are closed
+sunday are closed
+
+Project starts the 10st of november 2021
+
+[Implementation] lasts 40 days and is colored in Lavender/LightBlue
+[Final Tasks] lasts 13 days and is colored in Lavender/LightBlue and starts after [Implementation]'s end
+
+
+[Setup Kafka] lasts 9 days
+[Setup PostgreSQL] lasts 9 days and starts after [Setup Kafka]'s end
+[Setup Test Scripts] lasts 5 days and ends at [Implementation]'s end
+
+@endgantt
