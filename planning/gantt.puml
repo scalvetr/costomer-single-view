@@ -1,17 +1,37 @@
 @startgantt
 'https://plantuml.com/gantt-diagram
 
-saturday are closed
-sunday are closed
+Project starts the 27st of october 2021
 
-Project starts the 10st of november 2021
+'PEC 1
+[PEC1 Initial proposal] as [PEC1] lasts 12 days
+[1.1 Project Definition] as [PEC1_1] lasts 8 days and starts after [PEC1]'s start
+[1.2 Planning] as [PEC1_2] lasts 4 days and starts after [PEC1_1]'s end
 
-[Implementation] lasts 40 days and is colored in Lavender/LightBlue
-[Final Tasks] lasts 13 days and is colored in Lavender/LightBlue and starts after [Implementation]'s end
+'PEC 2
+[PEC2 Implementation and carrying out the project] as [PEC2] lasts 48 days and starts after [PEC1]'s end
+[2.1 Define source schemas] as [PEC2_1] lasts 3 days and starts after [PEC2]'s start
+[2.2 Define target schema] as [PEC2_2] lasts 2 days and starts after [PEC2_1]'s end
+[2.3 Setup Confluent Platform] as [PEC2_3] lasts 8 days and starts after [PEC2_2]'s end
+[2.4 Sources: Customer MS] as [PEC2_4] lasts 4 days and starts after [PEC2_3]'s end
+[2.5 Sources: Core Banking] as [PEC2_5] lasts 2 days and starts after [PEC2_4]'s end
+[2.6 Sources: Contact Center] as [PEC2_6] lasts 2 days and starts after [PEC2_5]'s end
+[2.7 Data pipe: Ingestion] as [PEC2_7] lasts 3 days and starts after [PEC2_6]'s end
+[2.8 Data pipe: transformations] as [PEC2_8] lasts 15 days and starts after [PEC2_7]'s end
+[2.9 Data pipe: Target DB] as [PEC2_9] lasts 2 days and starts after [PEC2_8]'s end
+[2.10 Data pipe: Sink] as [PEC2_10] lasts 2 days and starts after [PEC2_9]'s end
+[2.11 Service Layer: Single Customer View MS] as [PEC2_11] lasts 5 days and starts after [PEC2_10]'s end
 
+'PEC 3
+[PEC3 Paper writing and final aspects] as [PEC3] lasts 24 days and starts after [PEC2]'s end
+[3.1 Paper writing] as [PEC3_1] lasts 12 days and starts after [PEC3]'s start
+[3.2 Prepare presentation] as [PEC3_2] lasts 12 days and starts after [PEC3_1]'s end
 
-[Setup Kafka] lasts 9 days
-[Setup PostgreSQL] lasts 9 days and starts after [Setup Kafka]'s end
-[Setup Test Scripts] lasts 5 days and ends at [Implementation]'s end
+saturday are colored in lightgrey
+sunday are colored in lightgrey
+
+[PEC1] is colored in Lavender/LightBlue
+[PEC2] is colored in Lavender/LightBlue
+[PEC3] is colored in Lavender/LightBlue
 
 @endgantt
