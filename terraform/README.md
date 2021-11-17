@@ -1,4 +1,4 @@
-# customer-single-view
+# Install Confluent Platform
 
 ## Prerequisites
 
@@ -39,9 +39,17 @@ terraform apply -var-file terraform.tfvars
 
 Expose ports
 ```shell
+export k8s_namespace="customer-single-view"
 # control center
 export CONTROL_CENTER_POD_NAME=$(kubectl -n $k8s_namespace get pods -l "app=cp-control-center" -o jsonpath="{.items[0].metadata.name}")
 echo $CONTROL_CENTER_POD_NAME
 kubectl -n $k8s_namespace port-forward $CONTROL_CENTER_POD_NAME 9021:cc-http
-
 ```
+
+Access to control center:
+
+![Control Center Homepage](img/control-center-homepage.png)
+
+
+## See
+* https://confluentinc.github.io/cp-helm-charts/

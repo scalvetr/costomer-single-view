@@ -7,6 +7,9 @@ Gantt Diagram
 ![Gantt Diagram](planning/gantt.png)
 
 
-## Setup local environment
+## Install Confluent Platform
 
-[Setup the initial cluster](k8s-terraform/README.md)
+* Install a Kubernetes CLuster
+* Install the Confluent Platform
+
+[Instructions](terraform/README.md)

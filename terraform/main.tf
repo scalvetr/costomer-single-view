@@ -42,6 +42,20 @@ resource "kubernetes_namespace" "project-namespace" {
     name = var.k8s_namespace
   }
 }
+resource "kubernetes_config_map" "cp-kafka-connect-init-script" {
+  metadata {
+    name = "cp-kafka-connect-init-script"
+  }
+
+  data = {
+    "init-script.sh" = <<EOF
+        echo "Installing Connector"
+        confluent-hub install --no-prompt debezium/debezium-connector-mysql:1.7.0
+        confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:11.1.3
+        confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:2.0.0
+        EOF
+  }
+}
 
 resource "helm_release" "confluent" {
   name       = "confluent"
@@ -70,6 +84,34 @@ resource "helm_release" "confluent" {
   set {
     name  = "cp-kafka-connect.enabled"
     value = "true"
+  }
+  # install connect connectors
+  # https://hub.docker.com/r/confluentinc/cp-kafka-connect
+  # https://github.com/confluentinc/cp-helm-charts/tree/master/charts/cp-kafka-connect
+  set {
+    name = "cp-kafka-connect.image"
+    value = "confluentinc/cp-kafka-connect"
+  }
+  set {
+    name  = "cp-kafka-connect.customEnv.CUSTOM_SCRIPT_PATH"
+    value = "/etc/config/init-script.sh"
+  }
+  set {
+    name  = "cp-kafka-connect.volumes"
+    value = <<EOF
+    - name: config-volume
+      configMap:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        name: cp-kafka-connect-init-script
+    EOF
+  }
+  set {
+    name  = "cp-kafka-connect.volumeMounts"
+    value = <<EOF
+      - name: config-volume
+        mountPath: /etc/config
+    EOF
   }
   set {
     name  = "cp-ksql-server.enabled"
