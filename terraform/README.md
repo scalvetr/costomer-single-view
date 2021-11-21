@@ -10,6 +10,8 @@
 
 Configure terraform
 ```shell
+cd terraform
+
 # See: https://learn.hashicorp.com/tutorials/terraform/kubernetes-provider
 export k8s_name="kind-data-lake"
 export k8s_host=`kubectl config view -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster.server'`
@@ -32,21 +34,66 @@ k8s_namespace              = "${k8s_namespace}"
 EOF
 ```
 
+Debug a chart
+```shell
+helm repo add confluentinc https://confluentinc.github.io/cp-helm-charts/ 
+helm repo update
+helm install cp-helm-charts-debug confluentinc/cp-helm-charts --dry-run --debug --version 0.6.1 -f debug-values.yml
+```
+
 Run terraform
 ```shell
 terraform apply -var-file terraform.tfvars
 ```
 
-Expose ports
+Read logs
 ```shell
 export k8s_namespace="customer-single-view"
+export k8s_app_name="cp-control-center"
+
+# export k8s_app_name="cp-control-center"
+# export k8s_app_name="cp-kafka"
+# export k8s_app_name="cp-kafka-connect"
+# export k8s_pod_container="cp-kafka-connect-server"
+
 # control center
-export CONTROL_CENTER_POD_NAME=$(kubectl -n $k8s_namespace get pods -l "app=cp-control-center" -o jsonpath="{.items[0].metadata.name}")
-echo $CONTROL_CENTER_POD_NAME
-kubectl -n $k8s_namespace port-forward $CONTROL_CENTER_POD_NAME 9021:cc-http
+export POD_NAME=$(kubectl -n ${k8s_namespace} get pods -l "app=${k8s_app_name}" -o jsonpath="{.items[0].metadata.name}")
+echo "${k8s_app_name} => ${POD_NAME}"
+# Follow log
+kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} --follow
+# Store
+kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} > "${POD_NAME}_`date +%d_%m_%Y-%H_%M`.log"
+
 ```
 
-Access to control center:
+Port forward
+```shell
+export k8s_namespace="customer-single-view"
+export app_cp_control_center="cp-control-center"
+export app_cp_kafka="cp-kafka"
+export app_cp_kafka_connect="cp-kafka-connect"
+
+export CONTROL_CENTER_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_control_center}" -o jsonpath="{.items[0].metadata.name}")
+export KAFKA_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_kafka}" -o jsonpath="{.items[0].metadata.name}")
+export KAFKA_CONNECT_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_kafka_connect}" -o jsonpath="{.items[0].metadata.name}")
+export MONGODB_SERVICE_NAME="mongodb"
+export POSTGRESQL_SERVICE_NAME="postgresql"
+
+# Explore ports
+kubectl -n ${k8s_namespace} get services ${KAFKA_SERVICE_NAME} -o jsonpath="{.spec.ports}"
+# manual forwarding
+#kubectl -n ${k8s_namespace} port-forward service/${CONTROL_CENTER_SERVICE_NAME} 9021:cc-http
+#kubectl -n ${k8s_namespace} port-forward service/${KAFKA_SERVICE_NAME} 9092:broker
+
+kubepfm <<EOF
+ns=${k8s_namespace}:service/${CONTROL_CENTER_SERVICE_NAME}:9021:cc-http
+ns=${k8s_namespace}:service/${KAFKA_SERVICE_NAME}:9092:broker
+EOF
+
+```
+
+Access to control center [here](http://localhost:9021) 
+
 
 ![Control Center Homepage](img/control-center-homepage.png)
 
