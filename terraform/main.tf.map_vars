@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "2.6.1"
     }
-    helm = {
-      source = "hashicorp/helm"
+    helm       = {
+      source  = "hashicorp/helm"
       version = "2.3.0"
     }
   }
@@ -46,8 +46,8 @@ resource "kubernetes_namespace" "project-namespace" {
 resource "kubernetes_config_map" "cp-kafka-connect-init-script" {
   metadata {
     name = "cp-kafka-connect-init-script"
-    namespace = var.k8s_namespace
   }
+
   data = {
     "init-script.sh" = <<EOF
 #!/bin/bash
@@ -60,12 +60,12 @@ EOF
 }
 
 resource "helm_release" "confluent" {
-  name       = "confluent"
+  name = "confluent"
 
   repository = "https://confluentinc.github.io/cp-helm-charts"
   chart      = "cp-helm-charts"
   version    = "0.6.1"
-  namespace = var.k8s_namespace
+  namespace  = var.k8s_namespace
 
 
   set {
@@ -92,32 +92,35 @@ resource "helm_release" "confluent" {
   # https://hub.docker.com/r/confluentinc/cp-kafka-connect
   # https://github.com/confluentinc/cp-helm-charts/tree/master/charts/cp-kafka-connect
   set {
-    name = "cp-kafka-connect.image"
+    name  = "cp-kafka-connect.image"
     value = "confluentinc/cp-kafka-connect"
   }
   set {
-    name  = "cp-kafka-connect.customEnv.CUSTOM_SCRIPT_PATH"
-    value = "/etc/config/init-script.sh"
+    name  = "cp-kafka-connect.customEnv"
+    value = {
+      CUSTOM_SCRIPT_PATH = "/etc/config/init-script.sh"
+    }
   }
   set {
-    name  = "cp-kafka-connect.volumes[0].name"
-    value = "config-volume"
+    name  = "cp-kafka-connect.volumes"
+    value = [
+      {
+        "name"      = "config-volume"
+        "configMap" = {
+          "name" = "cp-kafka-connect-init-script"
+          "defaultMode" = "0777"
+        }
+      }
+    ]
   }
   set {
-    name  = "cp-kafka-connect.volumes[0].configMap.name"
-    value = "cp-kafka-connect-init-script"
-  }
-  set {
-    name  = "cp-kafka-connect.volumes[0].configMap.defaultMode"
-    value = "0777"
-  }
-  set {
-    name  = "cp-kafka-connect.volumeMounts[0].name"
-    value = "config-volume"
-  }
-  set {
-    name  = "cp-kafka-connect.volumeMounts[0].mountPath"
-    value = "/etc/config"
+    name  = "cp-kafka-connect.volumeMounts"
+    value = [
+      {
+        "name"      = "config-volume"
+        "mountPath" = "/etc/config"
+      }
+    ]
   }
   set {
     name  = "cp-ksql-server.enabled"
@@ -138,12 +141,12 @@ resource "helm_release" "confluent" {
 }
 
 resource "helm_release" "postgresql" {
-  name       = "postgresql"
+  name = "postgresql"
 
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "postgresql"
   version    = "10.13.8"
-  namespace = var.k8s_namespace
+  namespace  = var.k8s_namespace
 
   # https://github.com/bitnami/charts/tree/master/bitnami/postgresql/#parameters
   set {
@@ -157,7 +160,7 @@ resource "helm_release" "postgresql" {
 }
 
 resource "helm_release" "mongodb" {
-  name       = "mongodb"
+  name = "mongodb"
 
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "mongodb"

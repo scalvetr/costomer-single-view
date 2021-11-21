@@ -46,8 +46,8 @@ resource "kubernetes_namespace" "project-namespace" {
 resource "kubernetes_config_map" "cp-kafka-connect-init-script" {
   metadata {
     name = "cp-kafka-connect-init-script"
-    namespace = var.k8s_namespace
   }
+
   data = {
     "init-script.sh" = <<EOF
 #!/bin/bash
@@ -100,24 +100,22 @@ resource "helm_release" "confluent" {
     value = "/etc/config/init-script.sh"
   }
   set {
-    name  = "cp-kafka-connect.volumes[0].name"
-    value = "config-volume"
+    name  = "cp-kafka-connect.volumes"
+    value = <<EOT
+- name: config-volume
+  configMap:
+    # Provide the name of the ConfigMap containing the files you want
+    # to add to the container
+    name: cp-kafka-connect-init-script
+    defaultMode: 0777
+EOT
   }
   set {
-    name  = "cp-kafka-connect.volumes[0].configMap.name"
-    value = "cp-kafka-connect-init-script"
-  }
-  set {
-    name  = "cp-kafka-connect.volumes[0].configMap.defaultMode"
-    value = "0777"
-  }
-  set {
-    name  = "cp-kafka-connect.volumeMounts[0].name"
-    value = "config-volume"
-  }
-  set {
-    name  = "cp-kafka-connect.volumeMounts[0].mountPath"
-    value = "/etc/config"
+    name  = "cp-kafka-connect.volumeMounts"
+    value = <<EOT
+- name: config-volume
+  mountPath: /etc/config
+EOT
   }
   set {
     name  = "cp-ksql-server.enabled"
