@@ -51,10 +51,11 @@ resource "kubernetes_config_map" "cp-kafka-connect-init-script" {
   data = {
     "init-script.sh" = <<EOF
 #!/bin/bash
-echo "Installing Additional Connectors"
-confluent-hub install --no-prompt debezium/debezium-connector-mysql:1.7.0
-confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:11.1.3
-confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:2.0.0
+echo "[INIT] Installing Additional Connectors"
+echo "[INIT] confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1"
+confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1
+echo "[INIT] confluent-hub install --no-prompt debezium/debezium-connector-mongodb:1.7.1"
+confluent-hub install --no-prompt debezium/debezium-connector-mongodb:1.7.1
 EOF
   }
 }
@@ -109,7 +110,8 @@ resource "helm_release" "confluent" {
   }
   set {
     name  = "cp-kafka-connect.volumes[0].configMap.defaultMode"
-    value = "0777"
+    # value 0777 in decimal notation. Check here: https://kubernetes.io/docs/concepts/configuration/secret/#secret-files-permissions
+    value = 511
   }
   set {
     name  = "cp-kafka-connect.volumeMounts[0].name"
