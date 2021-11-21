@@ -44,25 +44,33 @@ helm install cp-helm-charts-debug confluentinc/cp-helm-charts --dry-run --debug 
 Run terraform
 ```shell
 terraform apply -var-file terraform.tfvars
+
+# to delete all infra
+terraform destroy
 ```
 
 Read logs
 ```shell
 export k8s_namespace="customer-single-view"
-export k8s_app_name="cp-control-center"
 
-# export k8s_app_name="cp-control-center"
+export k8s_app_name="cp-control-center"
+export k8s_pod_container="cp-control-center"
+
 # export k8s_app_name="cp-kafka"
+# export k8s_pod_container="ccp-kafka-broker"
+
 # export k8s_app_name="cp-kafka-connect"
 # export k8s_pod_container="cp-kafka-connect-server"
 
 # control center
 export POD_NAME=$(kubectl -n ${k8s_namespace} get pods -l "app=${k8s_app_name}" -o jsonpath="{.items[0].metadata.name}")
-echo "${k8s_app_name} => ${POD_NAME}"
+echo "${k8s_app_name} => ${POD_NAME}(${k8s_pod_container})"
+kubectl -n ${k8s_namespace} get pods -l "app=${k8s_app_name}" -o jsonpath="{.items[0].spec.containers[*].name}"
+
 # Follow log
 kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} --follow
 # Store
-kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} > "${POD_NAME}_`date +%d_%m_%Y-%H_%M`.log"
+kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} --follow | tee -a "${POD_NAME}_${k8s_pod_container}_`date +%d_%m_%Y-%H_%M`.log" 
 
 ```
 
@@ -80,7 +88,9 @@ export MONGODB_SERVICE_NAME="mongodb"
 export POSTGRESQL_SERVICE_NAME="postgresql"
 
 # Explore ports
+kubectl -n ${k8s_namespace} get services ${CONTROL_CENTER_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${KAFKA_SERVICE_NAME} -o jsonpath="{.spec.ports}"
+kubectl -n ${k8s_namespace} get services ${KAFKA_CONNECT_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 # manual forwarding
 #kubectl -n ${k8s_namespace} port-forward service/${CONTROL_CENTER_SERVICE_NAME} 9021:cc-http
 #kubectl -n ${k8s_namespace} port-forward service/${KAFKA_SERVICE_NAME} 9092:broker
