@@ -6,13 +6,15 @@
 The commands in MacOS would be:
 ```shell
 brew cask install docker
+brew install hyperkit@0.20200908
 brew install minikube@1.24.0
 ```
 
 ## Create the cluster
 ```shell
 export CLUSTER_NAME="data-lake";
-minikube start --driver=docker --profile=${CLUSTER_NAME} --kubernetes-version=v1.22.3
+minikube start --driver=hyperkit --profile=${CLUSTER_NAME} --kubernetes-version=v1.22.3
+# --driver=docker
 minikube profile list
 
 
