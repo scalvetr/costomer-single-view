@@ -25,6 +25,7 @@ hs_err_pid*
 terraform.tfvars
 *.tfstate
 *.tfstate.backup
+*.tfstate.lock.info
 .terraform.lock.hcl
 .terraform/
 

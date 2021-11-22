@@ -3,7 +3,9 @@
 ## Prerequisites
 
 * Install common tools: [Install common tools](INSTALL-COMMON-TOOLS.md)
-* K8S: [Create K8S cluster](K8S-CREATE-CLUSTER.md)
+* K8S:
+    * [Create K8S cluster with KinD](CREATE-K8S-CLUSTER-KIND.md)
+    * [Create K8S cluster with MiniKube](CREATE-K8S-CLUSTER-MINIKUBE.md)
 * Terraform: [Install terraform](INSTALL-TERRAFORM.md)
 
 ## Setup initial cluster
@@ -13,7 +15,7 @@ Configure terraform
 cd terraform
 
 # See: https://learn.hashicorp.com/tutorials/terraform/kubernetes-provider
-export k8s_name="kind-data-lake"
+export k8s_name="data-lake" # or kind-data-lake
 export k8s_host=`kubectl config view -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster.server'`
 export k8s_cluster_ca_certificate=`kubectl config view --flatten -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster["certificate-authority-data"]'`
 export k8s_client_certificate=`kubectl config view --flatten -o json | jq -r --arg userName "${k8s_name}" '.users[] | select(.name == $userName) | .user["client-certificate-data"]'`
@@ -38,6 +40,7 @@ Debug a chart
 ```shell
 helm repo add confluentinc https://confluentinc.github.io/cp-helm-charts/ 
 helm repo update
+# dump the terraform generated values to debug-values.yml
 helm install cp-helm-charts-debug confluentinc/cp-helm-charts --dry-run --debug --version 0.6.1 -f debug-values.yml
 ```
 
@@ -57,7 +60,7 @@ export k8s_app_name="cp-control-center"
 export k8s_pod_container="cp-control-center"
 
 # export k8s_app_name="cp-kafka"
-# export k8s_pod_container="ccp-kafka-broker"
+# export k8s_pod_container="cp-kafka-broker"
 
 # export k8s_app_name="cp-kafka-connect"
 # export k8s_pod_container="cp-kafka-connect-server"
@@ -72,6 +75,12 @@ kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} --follow
 # Store
 kubectl -n ${k8s_namespace} logs ${POD_NAME} ${k8s_pod_container} --follow | tee -a "${POD_NAME}_${k8s_pod_container}_`date +%d_%m_%Y-%H_%M`.log" 
 
+
+# List Events sorted by timestamp
+kubectl -n ${k8s_namespace} get events --sort-by=.metadata.creationTimestamp
+# List Events on a pod 
+kubectl -n ${k8s_namespace} get events --sort-by=.metadata.creationTimestamp --field-selector involvedObject.name=${POD_NAME}
+kubectl -n ${k8s_namespace} describe pod ${POD_NAME}
 ```
 
 Port forward
@@ -91,15 +100,31 @@ export POSTGRESQL_SERVICE_NAME="postgresql"
 kubectl -n ${k8s_namespace} get services ${CONTROL_CENTER_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${KAFKA_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${KAFKA_CONNECT_SERVICE_NAME} -o jsonpath="{.spec.ports}"
+kubectl -n ${k8s_namespace} get services ${MONGODB_SERVICE_NAME} -o jsonpath="{.spec.ports}"
+kubectl -n ${k8s_namespace} get services ${POSTGRESQL_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 # manual forwarding
 #kubectl -n ${k8s_namespace} port-forward service/${CONTROL_CENTER_SERVICE_NAME} 9021:cc-http
 #kubectl -n ${k8s_namespace} port-forward service/${KAFKA_SERVICE_NAME} 9092:broker
 
 kubepfm <<EOF
 ns=${k8s_namespace}:service/${CONTROL_CENTER_SERVICE_NAME}:9021:cc-http
-ns=${k8s_namespace}:service/${KAFKA_SERVICE_NAME}:9092:broker
+ns=${k8s_namespace}:service/${MONGODB_SERVICE_NAME}:27017:mongodb
+ns=${k8s_namespace}:service/${POSTGRESQL_SERVICE_NAME}:5432:tcp-postgresql
 EOF
 
+export k8s_app_name="cp-kafka"
+export k8s_pod_container="cp-kafka-broker"
+export POD_NAME=$(kubectl -n ${k8s_namespace} get pods -l "app=${k8s_app_name}" -o jsonpath="{.items[0].metadata.name}")
+export POD_IP=$(kubectl -n ${k8s_namespace} get pod ${POD_NAME} -o jsonpath="{.status.hostIP}")
+echo ${POD_IP}
+
+kubectl -n ${k8s_namespace} exec -it ${POD_NAME} --container ${k8s_pod_container} -- /bin/bash
+kubectl -n ${k8s_namespace} exec ${POD_NAME} --container ${k8s_pod_container} -- /bin/bash -c "env" | grep HOST_IP
+kubectl get nodes -o wide
+
+kcat -L -b ${POD_IP}:31090
+# or if you are not able to route
+kcat -L -b localhost:31090
 ```
 
 Access to control center [here](http://localhost:9021) 

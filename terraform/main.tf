@@ -85,6 +85,33 @@ resource "helm_release" "confluent" {
     name  = "cp-kafka.brokers"
     value = "3"
   }
+  # see: https://medium.com/swlh/enable-external-access-to-confluent-kafka-on-kubernetes-step-by-step-e4647ca7a927
+  # see: https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-kafka/values.yaml#L137
+  set {
+    name  = "cp-kafka.nodeport.enabled"
+    value = "true"
+  }
+  # in case you are not able to route to the k8s hostIp (kubectl get nodes -o wide), then you can manipulate the advertised listeners
+  # to listen to localhost
+  # https://tsuyoshiushio.medium.com/configuring-kafka-on-kubernetes-makes-available-from-an-external-client-with-helm-96e9308ee9f4
+/*
+  set {
+    name = "cp-kafka.configurationOverrides.advertised.listeners"
+    value = "EXTERNAL0://localhost:31090\\,EXTERNAL1://localhost:31091\\,EXTERNAL2://localhost:31092"
+  }
+  set {
+    name = "cp-kafka.configurationOverrides.listener.security.protocol.map"
+    value = "PLAINTEXT:PLAINTEXT\\,EXTERNAL0:PLAINTEXT\\,EXTERNAL1:PLAINTEXT\\,EXTERNAL2:PLAINTEXT"
+  }
+  set {
+    name = "cp-kafka.configurationOverrides.listeners"
+    value = "PLAINTEXT://:9092\\,EXTERNAL0://:31090\\,EXTERNAL1://:31091\\,EXTERNAL2://:31092"
+  }
+  set {
+    name = "cp-kafka.configurationOverrides.inter.broker.listener.name"
+    value = "PLAINTEXT"
+  }
+  */
   set {
     name  = "cp-kafka-connect.enabled"
     value = "true"

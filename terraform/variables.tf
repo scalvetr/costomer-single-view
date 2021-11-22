@@ -20,7 +20,6 @@ variable "k8s_cluster_ca_certificate" {
   sensitive = true
 }
 
-
 variable "k8s_project_label" {
   type = string
   default = "customer-single-view"
