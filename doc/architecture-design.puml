@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+rectangle "Input Sources" as inputs {
+    artifact "Customer MS" as ms_customer
+    database "Core Banking" as db_core_banking
+    database "Contact Center" as db_contact_center
+}
+
+rectangle "Data Pipelines" as pipelines {
+    rectangle "Ingestion Layer" as ingestion_layer {
+       component "MySql Debezium" as ingest_mysql_debezium
+       component "MongoDb Debezium" as ingest_mongodb_debezium
+    }
+    rectangle "Message Broker <<Kafka>>" as message_broker {
+        queue "topic.customer_entity" as topic_customer_entity
+        queue "topic.core_banking.customer_accounts" as topic_core_banking_customer_accounts
+        queue "topic.contact_center.customer_cases" as topic_contact_center_customer_cases
+        queue "topic.customer_single_view" as topic_customer_single_view
+       }
+
+    rectangle "Processing Layer" as processing_layer {
+        component "Kafka Streams"
+    }
+
+    rectangle "Egestion Layer" as egestion_layer {
+       component "MongoDb Debezium" as egest_mongodb_debezium
+    }
+
+}
+
+rectangle "Service Layer" as service_layer {
+    artifact "Customer Single View" as ms_customer_single_view
+    database "Customer Single View" as db_customer_single_view
+}
+
+inputs -[hidden]r-> pipelines
+pipelines -[hidden]r-> service_layer
+
+ingestion_layer -[hidden]r-> message_broker
+message_broker -[hidden]r-> egestion_layer
+
+
+ingestion_layer -[hidden]u-> processing_layer
+message_broker -u-> processing_layer
+egestion_layer -[hidden]u-> processing_layer
+
+processing_layer -> message_broker
+
+topic_customer_entity -[hidden]d-> topic_core_banking_customer_accounts
+topic_core_banking_customer_accounts -[hidden]d-> topic_contact_center_customer_cases
+topic_customer_single_view -[hidden]l-> topic_core_banking_customer_accounts
+
+ms_customer -[hidden]d-> db_core_banking
+db_core_banking -[hidden]d-> db_contact_center
+
+ingest_mysql_debezium -[hidden]d-> ingest_mongodb_debezium
+
+db_core_banking -r-> ingest_mysql_debezium
+db_contact_center -r-> ingest_mongodb_debezium
+
+ms_customer -r-> topic_customer_entity
+ingest_mysql_debezium -r-> topic_core_banking_customer_accounts
+ingest_mongodb_debezium -r-> topic_contact_center_customer_cases
+
+egest_mongodb_debezium -r-> db_customer_single_view
+topic_customer_single_view -r-> egest_mongodb_debezium
+
+db_customer_single_view -r-> ms_customer_single_view
+
+
+@enduml
