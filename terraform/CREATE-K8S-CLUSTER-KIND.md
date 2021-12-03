@@ -14,7 +14,7 @@ brew install kind@0.11.1
 
 ## Create the cluster
 ```shell
-export CLUSTER_NAME="data-lake";
+export CLUSTER_NAME="tfm";
 cat <<EOF | kind create cluster --name ${CLUSTER_NAME} --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -39,30 +39,30 @@ EOF
 
 
 # ... or just start
-docker start data-lake-control-plane
+docker start tfm-control-plane
 
 # check connectivity
-kubectl cluster-info --context kind-data-lake
+kubectl cluster-info --context kind-tfm
 
-docker port data-lake-control-plane
+docker port tfm-control-plane
 # 6443/tcp -> 127.0.0.1:55313
 # 31090/tcp -> 0.0.0.0:31090
 # 31091/tcp -> 0.0.0.0:31091
 # 31092/tcp -> 0.0.0.0:31092
 
 kind get clusters
-kubectl config use-context kind-data-lake
+kubectl config use-context kind-tfm
 kubectl cluster-info
 ```
 
 Cluster deletion
 
 ```shell
-kind delete cluster --name=data-lake
+kind delete cluster --name=tfm
 # or
-docker stop data-lake-control-plane
-docker rm data-lake-control-plane
+docker stop tfm-control-plane
+docker rm tfm-control-plane
 
-# check there's no "data-lake-control-plane" container
+# check there's no "tfm-control-plane" container
 docker container ls
 ```

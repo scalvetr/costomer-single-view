@@ -15,7 +15,7 @@ Configure terraform
 cd terraform
 
 # See: https://learn.hashicorp.com/tutorials/terraform/kubernetes-provider
-export k8s_name="data-lake" # or kind-data-lake
+export k8s_name="kind-tfm" # tfm or kind-tfm 
 export k8s_host=`kubectl config view -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster.server'`
 export k8s_cluster_ca_certificate=`kubectl config view --flatten -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster["certificate-authority-data"]'`
 export k8s_client_certificate=`kubectl config view --flatten -o json | jq -r --arg userName "${k8s_name}" '.users[] | select(.name == $userName) | .user["client-certificate-data"]'`
