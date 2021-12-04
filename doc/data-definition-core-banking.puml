@@ -1,0 +1,41 @@
+@startuml
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+<style>
+classDiagram {
+  BackGroundColor white
+  LineThickness 1
+  LineColor black
+}
+</style>
+
+entity "ACCOUNT" as account {
+* account_id : NUMBER <<generated>>
+---
+* customer_id : NUMBER
+iban : VARCHAR(35)
+balance : NUMBER(20,3)
+creation_date : DATE
+cancellation_date : DATE
+status : VARCHAR(10)
+}
+
+entity "BOOKING" as booking {
+* booking_id : number <<generated>>
+---
+* amount : NUMBER(20,3)
+description : VARCHAR(250)
+booking_date : DATE
+value_date : DATE
+fee : NUMBER(20,3)
+taxes : NUMBER(20,3)
+}
+
+account ||..o{ booking
+
+@enduml

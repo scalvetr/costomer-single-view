@@ -1,0 +1,25 @@
+@startyaml
+<style>
+yamlDiagram {
+  BackGroundColor white
+  LineThickness 1
+  LineColor black
+}
+</style>
+
+id: String
+name: String
+surname: String
+email: String
+telephones:
+    - number: String
+      primary: Boolean
+addresses:
+    - street: String
+      number: String
+      city: String
+      country: String
+      zipCode: String
+      default: Boolean
+
+@endyaml

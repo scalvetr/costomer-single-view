@@ -1,0 +1,20 @@
+@startyaml
+<style>
+yamlDiagram {
+  BackGroundColor white
+  LineThickness 1
+  LineColor black
+}
+</style>
+
+caseId: String
+customerId: String
+creation_timestamp: Timestamp
+communications:
+    - id: Long
+      timestamp: Timestamp
+      type: [phone, email]
+      text: String
+      notes: String
+
+@endyaml
