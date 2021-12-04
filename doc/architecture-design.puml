@@ -1,5 +1,26 @@
 @startuml
 'https://plantuml.com/deployment-diagram
+''!theme aws-orange
+
+<style>
+componentDiagram {
+  BackGroundColor white
+  LineThickness 1
+  LineColor black
+}
+database {
+    BackGroundColor: lightgrey;
+}
+artifact {
+    BackGroundColor: lightgrey;
+}
+component {
+    BackGroundColor: lightgrey;
+}
+queue {
+    BackGroundColor: lightgrey;
+}
+</style>
 
 rectangle "Input Sources" as inputs {
     artifact "Customer MS" as ms_customer
@@ -8,11 +29,11 @@ rectangle "Input Sources" as inputs {
 }
 
 rectangle "Data Pipelines" as pipelines {
-    rectangle "Ingestion Layer" as ingestion_layer {
+    rectangle "Ingestion Layer\n<<Kafka Connect>>" as ingestion_layer {
        component "MySql Debezium" as ingest_mysql_debezium
        component "MongoDb Debezium" as ingest_mongodb_debezium
     }
-    rectangle "Message Broker <<Kafka>>" as message_broker {
+    rectangle "Message Broker\n<<Kafka>>" as message_broker {
         queue "topic.customer_entity" as topic_customer_entity
         queue "topic.core_banking.customer_accounts" as topic_core_banking_customer_accounts
         queue "topic.contact_center.customer_cases" as topic_contact_center_customer_cases
@@ -23,7 +44,7 @@ rectangle "Data Pipelines" as pipelines {
         component "Kafka Streams"
     }
 
-    rectangle "Egestion Layer" as egestion_layer {
+    rectangle "Egestion Layer\n<<Kafka Connect>>" as egestion_layer {
        component "MongoDb Debezium" as egest_mongodb_debezium
     }
 
