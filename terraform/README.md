@@ -15,13 +15,13 @@ Configure terraform
 cd terraform
 
 # See: https://learn.hashicorp.com/tutorials/terraform/kubernetes-provider
-export k8s_name="kind-tfm" # tfm or kind-tfm 
+export k8s_name="tfm" # tfm or kind-tfm 
 export k8s_host=`kubectl config view -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster.server'`
 export k8s_cluster_ca_certificate=`kubectl config view --flatten -o json | jq -r --arg clusterName "${k8s_name}" '.clusters[] | select(.name == $clusterName) | .cluster["certificate-authority-data"]'`
 export k8s_client_certificate=`kubectl config view --flatten -o json | jq -r --arg userName "${k8s_name}" '.users[] | select(.name == $userName) | .user["client-certificate-data"]'`
 export k8s_client_key=`kubectl config view --flatten -o json | jq -r --arg userName "${k8s_name}" '.users[] | select(.name == $userName) | .user["client-key-data"]'`
 export k8s_project_label="customer-single-view"
-export k8s_namespace="customer-single-view"
+export k8s_namespace="default"
 
 cat > terraform.tfvars << EOF
 # variables.tf

@@ -166,9 +166,8 @@ resource "helm_release" "confluent" {
   }
 }
 
-resource "helm_release" "postgresql" {
-  name       = "postgresql"
-
+resource "helm_release" "postgresql-core-banking" {
+  name       = "postgresql-core-banking"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "postgresql"
   version    = "10.13.8"
@@ -185,8 +184,33 @@ resource "helm_release" "postgresql" {
   }
 }
 
-resource "helm_release" "mongodb" {
-  name       = "mongodb"
+resource "helm_release" "mongodb-contact-center" {
+  name       = "mongodb-contact-center"
+
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "mongodb"
+  version    = "10.29.2"
+  namespace  = var.k8s_namespace
+
+  values = [
+  ]
+  # https://github.com/bitnami/charts/tree/master/bitnami/mongodb/#parameters
+  set {
+    name  = "auth.database"
+    value = var.mongodb_database
+  }
+  set {
+    name  = "auth.username"
+    value = var.mongodb_username
+  }
+  set {
+    name  = "auth.password"
+    value = var.mongodb_password
+  }
+}
+
+resource "helm_release" "mongodb-customer-single-view" {
+  name       = "mongodb-customer-single-view"
 
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "mongodb"

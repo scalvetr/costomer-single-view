@@ -30,3 +30,5 @@ terraform.tfvars
 .terraform/
 
 /.idea
+/modules/ms-customer/ms-customer
+/modules/ms-customer/ms-customer.iml

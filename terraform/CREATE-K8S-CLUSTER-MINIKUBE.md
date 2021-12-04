@@ -13,9 +13,12 @@ brew install minikube@1.24.0
 ## Create the cluster
 ```shell
 export CLUSTER_NAME="tfm";
-minikube start --driver=hyperkit --profile=${CLUSTER_NAME} --kubernetes-version=v1.22.3
+minikube start --driver=hyperkit -p=${CLUSTER_NAME} --kubernetes-version=v1.22.3
 # --driver=docker
 minikube profile list
+# delete
+minikube profile list
+minikube  delete -p=${CLUSTER_NAME} 
 
 
 # check connectivity
