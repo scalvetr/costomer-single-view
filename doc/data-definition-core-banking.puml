@@ -17,7 +17,7 @@ classDiagram {
 entity "ACCOUNT" as account {
 * account_id : NUMBER <<generated>>
 ---
-* customer_id : NUMBER
+* customer_id : VARCHAR(20)
 iban : VARCHAR(35)
 balance : NUMBER(20,3)
 creation_date : DATE

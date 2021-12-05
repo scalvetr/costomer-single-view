@@ -1,0 +1,24 @@
+[
+  {
+    "id": "111111",
+    "name": "name",
+    "surname": "surname",
+    "email": "email@gmail.com",
+    "telephones": [
+      {
+        "number": "555-555-333",
+        "primary": true
+      }
+    ],
+    "addresses": [
+      {
+        "street": "Baker",
+        "number": "221B",
+        "city": "London",
+        "country": "UK",
+        "zipCode": "NW1 6XE",
+        "default": true
+      }
+    ]
+  }
+]
