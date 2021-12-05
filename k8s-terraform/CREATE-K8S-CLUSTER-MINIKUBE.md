@@ -15,10 +15,14 @@ brew install minikube@1.24.0
 export CLUSTER_NAME="tfm";
 minikube start --driver=hyperkit -p=${CLUSTER_NAME} --kubernetes-version=v1.22.3
 # --driver=docker
+# next time: minikube start --profile=tfm
+
+
+
 minikube profile list
 # delete
 minikube profile list
-minikube  delete -p=${CLUSTER_NAME} 
+minikube delete -p=${CLUSTER_NAME} 
 
 
 # check connectivity

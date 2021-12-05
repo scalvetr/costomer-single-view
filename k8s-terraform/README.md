@@ -54,8 +54,8 @@ terraform destroy
 
 Read logs
 ```shell
-export k8s_namespace="customer-single-view"
-
+#export k8s_namespace="customer-single-view"
+export k8s_namespace="default"
 export k8s_app_name="cp-control-center"
 export k8s_pod_container="cp-control-center"
 
@@ -85,21 +85,24 @@ kubectl -n ${k8s_namespace} describe pod ${POD_NAME}
 
 Port forward
 ```shell
-export k8s_namespace="customer-single-view"
+export k8s_namespace="default"
 export app_cp_control_center="cp-control-center"
+export app_cp_schema_registry="cp-schema-registry"
 export app_cp_kafka="cp-kafka"
 export app_cp_kafka_connect="cp-kafka-connect"
 
 export CONTROL_CENTER_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_control_center}" -o jsonpath="{.items[0].metadata.name}")
 export KAFKA_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_kafka}" -o jsonpath="{.items[0].metadata.name}")
 export KAFKA_CONNECT_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_kafka_connect}" -o jsonpath="{.items[0].metadata.name}")
-export MONGODB_SERVICE_NAME="mongodb"
-export POSTGRESQL_SERVICE_NAME="postgresql"
+export SCHEMA_REGISTRY_SERVICE_NAME=$(kubectl -n ${k8s_namespace} get services -l "app=${app_cp_schema_registry}" -o jsonpath="{.items[0].metadata.name}")
+export MONGODB_SERVICE_NAME="mongodb-contact-center"
+export POSTGRESQL_SERVICE_NAME="postgresql-core-banking"
 
 # Explore ports
 kubectl -n ${k8s_namespace} get services ${CONTROL_CENTER_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${KAFKA_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${KAFKA_CONNECT_SERVICE_NAME} -o jsonpath="{.spec.ports}"
+kubectl -n ${k8s_namespace} get services ${SCHEMA_REGISTRY_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${MONGODB_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 kubectl -n ${k8s_namespace} get services ${POSTGRESQL_SERVICE_NAME} -o jsonpath="{.spec.ports}"
 # manual forwarding
@@ -107,6 +110,7 @@ kubectl -n ${k8s_namespace} get services ${POSTGRESQL_SERVICE_NAME} -o jsonpath=
 #kubectl -n ${k8s_namespace} port-forward service/${KAFKA_SERVICE_NAME} 9092:broker
 
 kubepfm <<EOF
+ns=${k8s_namespace}:service/${SCHEMA_REGISTRY_SERVICE_NAME}:8081:schema-registry
 ns=${k8s_namespace}:service/${CONTROL_CENTER_SERVICE_NAME}:9021:cc-http
 ns=${k8s_namespace}:service/${MONGODB_SERVICE_NAME}:27017:mongodb
 ns=${k8s_namespace}:service/${POSTGRESQL_SERVICE_NAME}:5432:tcp-postgresql

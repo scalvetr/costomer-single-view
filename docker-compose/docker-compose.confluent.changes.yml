@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+
+  connect:
+    environment:
+      CUSTOM_SCRIPT_PATH: "/etc/config/init-script.sh"
+    volumes:
+      - ./kafka-connect/config/init-script.sh:/etc/config/init-script.sh

@@ -30,6 +30,11 @@ variable "k8s_namespace" {
   default = "customer-single-view"
 }
 
+variable "confluent_platform_version" {
+  type = string
+  default = "7.0.0"
+}
+
 variable "postgresql_username" {
   type = string
   default = "user"

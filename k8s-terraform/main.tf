@@ -10,7 +10,6 @@ terraform {
     }
   }
 }
-
 provider "kubernetes" {
   host = var.k8s_host
 
@@ -74,12 +73,21 @@ resource "helm_release" "confluent" {
     value = "true"
   }
   set {
+    name  = "cp-zookeeper.imageTag"
+    value = var.confluent_platform_version
+  }
+
+  set {
     name  = "cp-zookeeper.servers"
     value = "3"
   }
   set {
     name  = "cp-kafka.enabled"
     value = "true"
+  }
+  set {
+    name  = "cp-kafka.imageTag"
+    value = var.confluent_platform_version
   }
   set {
     name  = "cp-kafka.brokers"
@@ -116,13 +124,22 @@ resource "helm_release" "confluent" {
     name  = "cp-kafka-connect.enabled"
     value = "true"
   }
+  set {
+    name  = "cp-kafka-connect.imageTag"
+    value = var.confluent_platform_version
+  }
   # install connect connectors
   # https://hub.docker.com/r/confluentinc/cp-kafka-connect
   # https://github.com/confluentinc/cp-helm-charts/tree/master/charts/cp-kafka-connect
   set {
     name = "cp-kafka-connect.image"
-    value = "confluentinc/cp-kafka-connect"
+    value = "confluentinc/cp-kafka-connect" # default one. Add connectors via script
   }
+  set {
+    name = "cp-kafka-connect.replicaCount"
+    value = "1"
+  }
+
   set {
     name  = "cp-kafka-connect.customEnv.CUSTOM_SCRIPT_PATH"
     value = "/etc/config/init-script.sh"
@@ -153,16 +170,32 @@ resource "helm_release" "confluent" {
     value = "true"
   }
   set {
+    name  = "cp-ksql-server.imageTag"
+    value = var.confluent_platform_version
+  }
+  set {
     name  = "cp-control-center.enabled"
     value = "true"
+  }
+  set {
+    name  = "cp-control-center.imageTag"
+    value = var.confluent_platform_version
   }
   set {
     name  = "cp-schema-registry.enabled"
     value = "true"
   }
   set {
+    name  = "cp-schema-registry.imageTag"
+    value = var.confluent_platform_version
+  }
+  set {
     name  = "cp-kafka-rest.enabled"
     value = "false"
+  }
+  set {
+    name  = "cp-kafka-rest.imageTag"
+    value = var.confluent_platform_version
   }
 }
 
