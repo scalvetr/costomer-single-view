@@ -1,3 +1,40 @@
-{
- "type": "string"
+{"namespace": "edu.uoc.scalvetr",
+ "type": "record",
+ "name": "Customer",
+ "fields": [
+     {"name": "customerId", "type": "string"},
+     {"name": "name", "type": "string"},
+     {"name": "surname", "type": "string"},
+     {"name": "email", "type": "string"},
+     {"name": "telephones",
+              "type":{
+                  "type": "array",
+                  "items":{
+                      "name":"Phone",
+                      "type":"record",
+                      "fields":[
+                          {"name":"number", "type":"string"},
+                          {"name":"primary", "type":"boolean"}
+                      ]
+                  }
+              }
+          },
+     {"name": "addresses",
+              "type":{
+                  "type": "array",
+                  "items":{
+                      "name":"Address",
+                      "type":"record",
+                      "fields":[
+                          {"name":"street", "type":"string"},
+                          {"name":"number", "type":"string"},
+                          {"name":"city", "type":"string"},
+                          {"name":"country", "type":"string"},
+                          {"name":"zipCode", "type":"string"},
+                          {"name":"default", "type":"boolean"}
+                      ]
+                  }
+              }
+          }
+ ]
 }

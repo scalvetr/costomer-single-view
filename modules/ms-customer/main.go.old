@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/fatih/structs"
 	"github.com/mycujoo/go-kafka-avro"
 	"io/ioutil"
 	"log"
@@ -35,8 +36,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// already closed by kafkaavro.NewProduce
-	//defer p.Close()
+	defer p.Close()
 
 	log.Printf("kafkaavro.NewCachedSchemaRegistryClient\n")
 	srClient, err := kafkaavro.NewCachedSchemaRegistryClient(schemaRegistryUrl)
@@ -60,8 +60,8 @@ func main() {
 	log.Printf("readData\n")
 	data := readData(*dataFile)
 	for _, item := range data {
-		key := item["customerId"]
-		value := item
+		key := item.CustomerId
+		value := structs.Map(item)
 		log.Printf("avroProducer.Produce(%v, %v)\n", key, value)
 		err = avroProducer.Produce(key, value, nil)
 		if err != nil {
@@ -88,18 +88,40 @@ func readSchema(schemaName string) string {
 	//fmt.Println(avroSchema)
 	return avroSchema
 }
-func readData(fileName string) []map[string]interface{} {
+func readData(fileName string) []CustomerStruct {
 	log.Printf("readData: ioutil.ReadFile\n")
 	fileBytes, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var data []map[string]interface{}
+	var customer []CustomerStruct
 
 	log.Printf("readData: json.Unmarshal\n")
-	err = json.Unmarshal(fileBytes, &data)
+	err = json.Unmarshal(fileBytes, &customer)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return data
+	return customer
+}
+
+type CustomerStruct struct {
+	CustomerId string `json:"customer_id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	Surname    string `json:"surname,omitempty"`
+	Email      string `json:"email,omitempty"`
+	Telephones []TelephoneStruct `json:"telephones,omitempty"`
+	Addresses  []AddressStruct `json:"addresses,omitempty"`
+}
+
+type AddressStruct struct {
+	Street  string `json:"street,omitempty"`
+	Number  string `json:"number,omitempty"`
+	City    string `json:"city,omitempty"`
+	Country string `json:"country,omitempty"`
+	ZipCode string `json:"zip_code,omitempty"`
+	Default bool `json:"default,omitempty"`
+}
+type TelephoneStruct struct {
+	Number  string `json:"number,omitempty"`
+	Primary bool `json:"primary,omitempty"`
 }
