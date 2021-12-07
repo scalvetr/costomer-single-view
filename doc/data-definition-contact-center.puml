@@ -9,6 +9,7 @@ yamlDiagram {
 
 caseId: String
 customerId: String
+title: String
 creation_timestamp: Timestamp
 communications:
     - id: Long

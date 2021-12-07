@@ -13,6 +13,10 @@ services:
       CORE_BANKING_DB_USER: "user"
       CORE_BANKING_DB_PASSWORD: "password"
       CORE_BANKING_DB_NAME: "core-banking"
+      CONTACT_CENTER_DB_URI: "mongodb://mongodb-contact-center:27017"
+      CONTACT_CENTER_DB_USER: "user"
+      CONTACT_CENTER_DB_PASSWORD: "password"
+      CONTACT_CENTER_DB_NAME: "contact-center"
     volumes:
       - "../schemas/customer-key.avsc:/schemas/customer-key.avsc"
       - "../schemas/customer-value.avsc:/schemas/customer-value.avsc"
@@ -29,11 +33,22 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRESQL_USERNAME: user
-      POSTGRESQL_PASSWORD: password
-      POSTGRESQL_DATABASE: core-banking
+      POSTGRESQL_USERNAME: "user"
+      POSTGRESQL_PASSWORD: "password"
+      POSTGRESQL_DATABASE: "core-banking"
     volumes:
       - "../schemas/core-banking.ddl:/docker-entrypoint-initdb.d/core-banking.sql"
 
+  # https://github.com/bitnami/bitnami-docker-mongodb#setting-up-replication
   mongodb-contact-center:
     image: "bitnami/mongodb:4.4.10-debian-10-r44"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGODB_ROOT_USER: "admin"
+      MONGODB_ROOT_PASSWORD: "admin"
+      MONGODB_USERNAME: "user"
+      MONGODB_PASSWORD: "password"
+      MONGODB_DATABASE: "contact-center"
+      MONGODB_SYSTEM_LOG_VERBOSITY: "1"
+      MONGODB_ENABLE_JOURNAL: "true"

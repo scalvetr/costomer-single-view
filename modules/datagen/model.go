@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 type CustomerStruct struct {
 	CustomerId string            `json:"customerId,omitempty"`
@@ -63,14 +66,16 @@ type BookingStruct struct {
 }
 
 type CaseStruct struct {
-	CaseId            string    `json:"caseId,omitempty"`
-	CustomerId        string    `json:"customerId,omitempty"`
-	CreationTimestamp time.Time `json:"creation_timestamp,omitempty"`
+	ID                primitive.ObjectID        `bson:"_id,omitempty"`
+	CaseId            string                    `bson:"case_id,omitempty"`
+	CustomerId        string                    `bson:"customer_id,omitempty"`
+	Title             string                    `bson:"title,omitempty"`
+	CreationTimestamp time.Time                 `bson:"creation_timestamp,omitempty"`
+	Communications    []CaseCommunicationStruct `bson:"communications,omitempty"`
 }
 type CaseCommunicationStruct struct {
-	CommunicationId int64  `json:"communicationId,omitempty"`
-	CaseId          string `json:"caseId,omitempty"`
-	Type            string `json:"type,omitempty"`
-	Text            string `json:"text,omitempty"`
-	Notes           string `json:"notes,omitempty"`
+	CommunicationId string `bson:"communication_id,omitempty"`
+	Type            string `bson:"type,omitempty"`
+	Text            string `bson:"text,omitempty"`
+	Notes           string `bson:"notes,omitempty"`
 }

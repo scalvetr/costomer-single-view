@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
 	"log"
 	"math/rand"
@@ -15,18 +16,18 @@ const capacity = 1000
 var customers = new([capacity]CustomerStruct)
 
 type CustomerRepo struct {
-	PgDbConfig      PgDbConfig
-	coreBankingRepo CoreBankingRepo
-	random          *rand.Rand
-	faker           faker.Faker
+	coreBankingRepo   CoreBankingRepo
+	contactCenterRepo ContactCenterRepo
+	random            *rand.Rand
+	faker             faker.Faker
 }
 
-func BuildCustomerRepo(dbConfig PgDbConfig) CustomerRepo {
+func BuildCustomerRepo(dbConfig PgDbConfig, mongoConfig MongoDbConfig) CustomerRepo {
 	return CustomerRepo{
-		PgDbConfig:      dbConfig,
-		coreBankingRepo: BuildCoreBankingRepo(dbConfig),
-		random:          rand.New(rand.NewSource(22)),
-		faker:           faker.New(),
+		coreBankingRepo:   BuildCoreBankingRepo(dbConfig),
+		contactCenterRepo: BuildContactCenterRepo(mongoConfig),
+		random:            rand.New(rand.NewSource(22)),
+		faker:             faker.New(),
 	}
 }
 func (r CustomerRepo) buildCustomer() CustomerStruct {
@@ -121,9 +122,32 @@ func (r CustomerRepo) CreateBooking(account AccountStruct) BookingStruct {
 }
 
 func (r CustomerRepo) NextCase(customer CustomerStruct) CaseStruct {
-	return CaseStruct{}
+	createNew := rand.Int()%2 == 0
+	if !createNew {
+		c := r.contactCenterRepo.GetOpenCase(customer.CustomerId)
+		if c != nil {
+			log.Printf("return an existing account with id (%v)\n", customer.CustomerId)
+			return *c
+		}
+	}
+	c := r.contactCenterRepo.StoreCase(CaseStruct{
+		CaseId:            uuid.New().String(),
+		CustomerId:        customer.CustomerId,
+		Title:             r.faker.Lorem().Sentence(r.random.Intn(15)),
+		CreationTimestamp: time.Now(),
+		Communications:    []CaseCommunicationStruct{},
+	})
+	return c
 }
 
 func (r CustomerRepo) CreateCommunication(c CaseStruct) CaseCommunicationStruct {
-	return CaseCommunicationStruct{}
+	communication := CaseCommunicationStruct{
+		CommunicationId: uuid.New().String(),
+		Text:            r.faker.Lorem().Sentence(r.random.Intn(15)),
+		Type:            r.faker.RandomStringElement([]string{"Mobile", "Web", "Phone"}),
+		Notes:           r.faker.Lorem().Sentence(r.random.Intn(25)),
+	}
+	c.Communications = append(c.Communications, communication)
+	r.contactCenterRepo.StoreCase(c)
+	return communication
 }
