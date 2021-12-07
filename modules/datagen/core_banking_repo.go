@@ -83,7 +83,7 @@ func (r CoreBankingRepo) StoreAccount(account AccountStruct) AccountStruct {
 
 }
 
-func (r CoreBankingRepo) GetAccount(accountId int) AccountStruct {
+func (r CoreBankingRepo) GetAccount(accountId int32) AccountStruct {
 	rows, err := r.db.Query(`SELECT * FROM account
 		WHERE account_id = $1`,
 		accountId)
@@ -97,13 +97,42 @@ func (r CoreBankingRepo) GetAccount(accountId int) AccountStruct {
 	return account
 
 }
-func (r CoreBankingRepo) UpdateAccountBalance(accountId int, balance float64) AccountStruct {
-	r.db.Query(`UPDATE account 
-    SET balance = $1
-    WHERE account_id = $2`,
+func (r CoreBankingRepo) UpdateAccountBalance(accountId int32, balance float64) AccountStruct {
+	_, err := r.db.Query(`UPDATE account 
+	    SET balance = $1
+	    WHERE account_id = $2`,
 		balance,
 		accountId)
+	if err != nil {
+		panic(err)
+	}
 
 	return r.GetAccount(accountId)
 
+}
+
+func (r CoreBankingRepo) StoreBooking(booking BookingStruct) BookingStruct {
+	err := r.db.QueryRow(`INSERT 
+			INTO booking (
+						  account_id,
+						  amount,
+						  description,
+						  booking_date,
+						  value_date,
+						  fee,
+						  taxes)
+			VALUES ($1, $2, $3, $4, $5, $6, $7)
+			RETURNING booking_id`,
+		booking.AccountId,
+		booking.Amount,
+		booking.Description,
+		booking.BookingDate,
+		booking.ValueDate,
+		booking.Fee,
+		booking.Taxes,
+	).Scan(&booking.BookingId)
+	if err != nil {
+		panic(err)
+	}
+	return booking
 }

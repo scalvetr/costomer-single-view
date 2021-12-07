@@ -52,14 +52,18 @@ func main() {
 	for {
 		// Dummy: ms-customer -> produce to kafka
 		customer, isNew := repo.NextCustomer()
+		log.Printf("NextCustomer() = %v, %v\n", customer, isNew)
 		if isNew {
 			kafkaProducer.ProduceCustomer(customer)
+			log.Printf("ProduceCustomer(%v)\n", customer)
 		}
 		time.Sleep(time.Second * 1)
 		// Dummy: core banking -> produce to postgresql
 		account := repo.NextAccount(customer)
+		log.Printf("NextAccount(%v) = %v\n", customer, account)
 		time.Sleep(time.Second * 1)
-		repo.CreateBooking(account)
+		booking := repo.CreateBooking(account)
+		log.Printf("CreateBooking(%v) = %v\n", account, booking)
 		time.Sleep(time.Second * 1)
 
 		// Dummy: Contact Center -> produce to MySql

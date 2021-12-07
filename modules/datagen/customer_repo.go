@@ -17,8 +17,18 @@ var customers = new([capacity]CustomerStruct)
 type CustomerRepo struct {
 	PgDbConfig      PgDbConfig
 	coreBankingRepo CoreBankingRepo
+	random          *rand.Rand
+	faker           faker.Faker
 }
 
+func BuildCustomerRepo(dbConfig PgDbConfig) CustomerRepo {
+	return CustomerRepo{
+		PgDbConfig:      dbConfig,
+		coreBankingRepo: BuildCoreBankingRepo(dbConfig),
+		random:          rand.New(rand.NewSource(22)),
+		faker:           faker.New(),
+	}
+}
 func (r CustomerRepo) buildCustomer() CustomerStruct {
 	faker := faker.New()
 	firstName := faker.Person().FirstName()
@@ -67,12 +77,6 @@ func (r CustomerRepo) NextCustomer() (CustomerStruct, bool) {
 		return customers[index], true
 	}
 }
-func BuildCustomerRepo(dbConfig PgDbConfig) CustomerRepo {
-	return CustomerRepo{
-		PgDbConfig:      dbConfig,
-		coreBankingRepo: BuildCoreBankingRepo(dbConfig),
-	}
-}
 
 func (r CustomerRepo) NextAccount(customer CustomerStruct) AccountStruct {
 	createNew := rand.Int()%2 == 0
@@ -97,7 +101,23 @@ func (r CustomerRepo) NextAccount(customer CustomerStruct) AccountStruct {
 }
 
 func (r CustomerRepo) CreateBooking(account AccountStruct) BookingStruct {
-	return BookingStruct{}
+	accountId := account.AccountId
+	amount := r.random.Float64() * 10.000
+
+	booking := r.coreBankingRepo.StoreBooking(BookingStruct{
+		BookingId:   0,
+		AccountId:   accountId,
+		Amount:      amount,
+		Description: r.faker.Lorem().Sentence(r.random.Intn(15)),
+		BookingDate: time.Now(),
+		ValueDate:   time.Now(),
+		Fee:         0.0,
+		Taxes:       0.0,
+	})
+	r.coreBankingRepo.UpdateAccountBalance(accountId, account.Balance+booking.Amount)
+
+	return booking
+
 }
 
 func (r CustomerRepo) NextCase(customer CustomerStruct) CaseStruct {
