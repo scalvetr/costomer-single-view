@@ -9,15 +9,26 @@ import (
 func main() {
 	keySchemaFile := flag.String("key-schema-file", "customer-key.avsc", "AVRO key schema file")
 	valueSchemaFile := flag.String("value-schema-file", "customer-value.avsc", "AVRO value schema file")
-	bootstrapServers := GetEnv("BOOTSTRAP_SERVERS", "localhost:9092")
-	schemaRegistryUrl := GetEnv("SCHEMA_REGISTRY_URL", "http://localhost:8081")
-	topicName := GetEnv("TOPIC_NAME", "event.customer.entity")
+	bootstrapServers := GetEnv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+	schemaRegistryUrl := GetEnv("KAFKA_SCHEMA_REGISTRY_URL", "http://localhost:8081")
+	topicName := GetEnv("KAFKA_TOPIC_NAME", "event.customer.entity")
+	coreBankingDbHost := GetEnv("CORE_BANKING_DB_HOST", "localhost")
+	coreBankingDbPort := GetEnv("CORE_BANKING_DB_PORT", "5432")
+	coreBankingDbUser := GetEnv("CORE_BANKING_DB_USER", "user")
+	coreBankingDbPassword := GetEnv("CORE_BANKING_DB_PASSWORD", "password")
+	coreBankingDbName := GetEnv("CORE_BANKING_DB_NAME", "core-banking")
+
 	flag.Parse()
 	log.Printf("keySchemaFile: %v\n", *keySchemaFile)
 	log.Printf("valueSchemaFile: %v\n", *valueSchemaFile)
 	log.Printf("bootstrapServers: %v\n", bootstrapServers)
 	log.Printf("schemaRegistryUrl: %v\n", schemaRegistryUrl)
 	log.Printf("topicName: %v\n", topicName)
+	log.Printf("coreBankingDbHost: %v\n", coreBankingDbHost)
+	log.Printf("coreBankingDbPort: %v\n", coreBankingDbPort)
+	log.Printf("coreBankingDbUser: %v\n", coreBankingDbUser)
+	log.Printf("coreBankingDbPassword: %v\n", coreBankingDbPassword)
+	log.Printf("coreBankingDbName: %v\n", coreBankingDbName)
 
 	log.Printf("readSchema(%v)\n", *keySchemaFile)
 	keySchema := ReadFile(*keySchemaFile)
@@ -30,7 +41,13 @@ func main() {
 		panic(err)
 	}
 
-	repo := CustomerRepo{}
+	repo := BuildCustomerRepo(PgDbConfig{
+		DbHost:     coreBankingDbHost,
+		DbPort:     coreBankingDbPort,
+		DbUser:     coreBankingDbUser,
+		DbPassword: coreBankingDbPassword,
+		DbName:     coreBankingDbName,
+	})
 
 	for {
 		// Dummy: ms-customer -> produce to kafka

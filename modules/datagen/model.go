@@ -24,14 +24,31 @@ type TelephoneStruct struct {
 	Primary bool   `json:"primary"`
 }
 
+type AccountStatus int64
+
+const (
+	Open AccountStatus = iota
+	Cancelled
+)
+
+func (s AccountStatus) String() string {
+	switch s {
+	case Open:
+		return "OPEN"
+	case Cancelled:
+		return "CANCELLED"
+	}
+	return "unknown"
+}
+
 type AccountStruct struct {
-	AccountId        int32     `json:"accountId,omitempty"`
-	CustomerId       string    `json:"customerId,omitempty"`
-	IBAN             string    `json:"iban,omitempty"`
-	Balance          float64   `json:"balance,omitempty"`
-	CreationDate     time.Time `json:"creationDate,omitempty"`
-	CancellationDate time.Time `json:"cancellationDate,omitempty"`
-	Status           string    `json:"status,omitempty"`
+	AccountId        int32         `json:"accountId,omitempty" db:"account_id"`
+	CustomerId       string        `json:"customerId,omitempty" db:"customer_id"`
+	IBAN             string        `json:"iban,omitempty" db:"iban"`
+	Balance          float64       `json:"balance,omitempty" db:"balance"`
+	CreationDate     time.Time     `json:"creationDate,omitempty" db:"creation_date"`
+	CancellationDate *time.Time    `json:"cancellationDate,omitempty" db:"cancellation_date"`
+	Status           AccountStatus `json:"status,omitempty" db:"status"`
 }
 
 type BookingStruct struct {

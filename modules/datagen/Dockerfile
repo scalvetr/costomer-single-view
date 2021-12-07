@@ -25,8 +25,8 @@ RUN apk add --no-cache libc6-compat
 COPY --from=build-env /go/bin/app /go/bin/app
 
 # Run
-ENV TOPIC_NAME="topic"
-ENV BOOTSTRAP_SERVERS="localhost:9092"
-ENV SCHEMA_REGISTRY_URL="localhost:8081"
+ENV KAFKA_TOPIC_NAME="topic"
+ENV KAFKA_BOOTSTRAP_SERVERS="localhost:9092"
+ENV KAFKA_SCHEMA_REGISTRY_URL="localhost:8081"
 
 ENTRYPOINT ["/go/bin/app"]

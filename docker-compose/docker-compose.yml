@@ -5,9 +5,14 @@ services:
     build:
       context: ../modules/datagen
     environment:
-      TOPIC_NAME: "event.customer.entity"
-      BOOTSTRAP_SERVERS: "broker:29092"
-      SCHEMA_REGISTRY_URL: "schema-registry:8081"
+      KAFKA_TOPIC_NAME: "event.customer.entity"
+      KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+      KAFKA_SCHEMA_REGISTRY_URL: "schema-registry:8081"
+      CORE_BANKING_DB_HOST: "postgresql-core-banking"
+      CORE_BANKING_DB_PORT: "5432"
+      CORE_BANKING_DB_USER: "user"
+      CORE_BANKING_DB_PASSWORD: "password"
+      CORE_BANKING_DB_NAME: "core-banking"
     volumes:
       - "../schemas/customer-key.avsc:/schemas/customer-key.avsc"
       - "../schemas/customer-value.avsc:/schemas/customer-value.avsc"
@@ -21,9 +26,14 @@ services:
 
   postgresql-core-banking:
     image: "bitnami/postgresql:11.14.0-debian-10-r17"
+    ports:
+      - "5432:5432"
     environment:
-      POSTGRESQL_PASSWORD: password
       POSTGRESQL_USERNAME: user
+      POSTGRESQL_PASSWORD: password
       POSTGRESQL_DATABASE: core-banking
+    volumes:
+      - "../schemas/core-banking.ddl:/docker-entrypoint-initdb.d/core-banking.sql"
+
   mongodb-contact-center:
     image: "bitnami/mongodb:4.4.10-debian-10-r44"

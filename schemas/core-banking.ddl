@@ -1,21 +1,21 @@
-CREATE TABLE account IN NOT EXISTS
+CREATE TABLE IF NOT EXISTS account
 (
-    account_id NUMBER NOT NULL PRIMARY KEY,
-    customer_id VARCHAR(20) NOT NULL,
-    iban VARCHAR(35) NOT NULL,
-    balance NUMBER(20,3) NOT NULL,
-    creation_date DATE NOT NULL,
+    account_id        SERIAL         NOT NULL PRIMARY KEY,
+    customer_id       VARCHAR(20)    NOT NULL,
+    iban              VARCHAR(35)    NOT NULL,
+    balance           DECIMAL(20, 3) NOT NULL,
+    creation_date     DATE           NOT NULL,
     cancellation_date DATE,
-    status VARCHAR(10) NOT NULL
-)
-CREATE TABLE booking IN NOT EXISTS
+    status            VARCHAR(10)    NOT NULL
+);
+CREATE TABLE IF NOT EXISTS booking
 (
-    booking_id NUMBER NOT NULL PRIMARY KEY,
-    account_id NUMBER NOT NULL,
-    ammount NUMBER(20,3) NOT NULL,
-    description VARCHAR(250) NOT NULL,
-    booking_date DATE NOT NULL,
-    value_date DATE,
-    fee NUMBER(20,3) NOT NULL DEFAULT 0,
-    taxes NUMBER(20,3) NOT NULL DEFAULT 0
-    )
+    booking_id   SERIAL         NOT NULL PRIMARY KEY,
+    account_id   INTEGER        NOT NULL,
+    amount       DECIMAL(20, 3) NOT NULL,
+    description  VARCHAR(250)   NOT NULL,
+    booking_date DATE           NOT NULL,
+    value_date   DATE,
+    fee          DECIMAL(20, 3) NOT NULL DEFAULT 0,
+    taxes        DECIMAL(20, 3) NOT NULL DEFAULT 0
+);

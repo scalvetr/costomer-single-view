@@ -5,7 +5,9 @@ go 1.17
 require (
 	github.com/confluentinc/confluent-kafka-go v1.7.0
 	github.com/jaswdr/faker v1.8.0
+	github.com/lib/pq v1.10.4
 	github.com/mycujoo/go-kafka-avro/v2 v2.0.0
+	github.com/blockloop/scan v1.3.0
 )
 
 require (
