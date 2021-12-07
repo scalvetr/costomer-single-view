@@ -1,6 +1,29 @@
 version: "3.9"
 services:
+  datagen:
+    image: "datagen:latest"
+    build:
+      context: ../modules/datagen
+    environment:
+      TOPIC_NAME: "event.customer.entity"
+      BOOTSTRAP_SERVERS: "broker:29092"
+      SCHEMA_REGISTRY_URL: "schema-registry:8081"
+    volumes:
+      - "../schemas/customer-key.avsc:/schemas/customer-key.avsc"
+      - "../schemas/customer-value.avsc:/schemas/customer-value.avsc"
+    command:
+      - "-key-schema-file=/schemas/customer-key.avsc"
+      - "-value-schema-file=/schemas/customer-value.avsc"
+    depends_on:
+      - mongodb-contact-center
+      - postgresql-core-banking
+      - broker
+
   postgresql-core-banking:
     image: "bitnami/postgresql:11.14.0-debian-10-r17"
+    environment:
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_USERNAME: user
+      POSTGRESQL_DATABASE: core-banking
   mongodb-contact-center:
     image: "bitnami/mongodb:4.4.10-debian-10-r44"

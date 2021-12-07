@@ -30,5 +30,6 @@ terraform.tfvars
 .terraform/
 
 /.idea
-/modules/ms-customer/ms-customer
-/modules/ms-customer/ms-customer.iml
+/modules/datagen/datagen
+*.iml
+/modules/datagen/customer_repo

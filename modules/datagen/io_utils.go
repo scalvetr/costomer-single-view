@@ -1,0 +1,56 @@
+package main
+
+import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"os"
+)
+
+func GetEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+func ReadFile(schemaName string) string {
+	avroSchemaBytes, err := ioutil.ReadFile(schemaName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Convert []byte to string and print to screen
+	avroSchema := string(avroSchemaBytes)
+	//fmt.Println(avroSchema)
+	return avroSchema
+}
+func ReadJson(fileName string) []CustomerStruct {
+	log.Printf("readData: ioutil.ReadFile\n")
+	fileBytes, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var data []CustomerStruct
+
+	log.Printf("readData: json.Unmarshal\n")
+	err = json.Unmarshal(fileBytes, &data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
+}
+
+func ToMap(customer CustomerStruct) map[string]interface{} {
+	log.Printf("readData: ioutil.ReadFile\n")
+	jsonStr, err := json.Marshal(customer)
+	if err != nil {
+		panic(err)
+	}
+	var data map[string]interface{}
+
+	log.Printf("readData: json.Unmarshal\n")
+	err = json.Unmarshal(jsonStr, &data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
+}
