@@ -261,6 +261,14 @@ resource "helm_release" "mongodb-contact-center" {
     name  = "auth.password"
     value = var.mongodb_password
   }
+  set {
+    name = "architecture"
+    value = "replicaset"
+  }
+  set {
+    name = "auth.replicaSetKey"
+    value = "contactCenterRs1"
+  }
 }
 
 resource "helm_release" "mongodb-customer-single-view" {

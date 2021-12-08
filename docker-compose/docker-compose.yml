@@ -55,4 +55,7 @@ services:
       MONGODB_PASSWORD: "password"
       MONGODB_DATABASE: "contact-center"
       MONGODB_SYSTEM_LOG_VERBOSITY: "1"
-      MONGODB_ENABLE_JOURNAL: "true"
+      MONGODB_ADVERTISED_HOSTNAME: "mongodb-contact-center"
+      #MONGODB_REPLICA_SET_NAME: "contact-center"
+      MONGODB_REPLICA_SET_MODE: "primary"
+      MONGODB_REPLICA_SET_KEY: "contactCenterRs1"
