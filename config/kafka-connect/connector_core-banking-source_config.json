@@ -6,7 +6,7 @@
     "database.server.name": "core-banking",
     "database.hostname": "postgresql-core-banking",
     "database.port": "5432",
-    "database.user": "user",
+    "database.user": "replication-user",
     "database.password": "password",
     "database.dbname": "core-banking",
     "plugin.name": "wal2json",
