@@ -1,0 +1,18 @@
+{
+  "name": "core-banking-source",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "topic.creation.groups": "raw.core_banking.customer_accounts",
+    "database.server.name": "core-banking",
+    "database.hostname": "postgresql-core-banking",
+    "database.port": "5432",
+    "database.user": "user",
+    "database.password": "password",
+    "database.dbname": "core-banking",
+    "plugin.name": "wal2json",
+    "table.include.list": "account",
+    "schema.include.list": "public",
+    "topic.creation.default.partitions": "1",
+    "topic.creation.default.replication.factor": "1"
+  }
+}

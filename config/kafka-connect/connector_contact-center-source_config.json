@@ -1,0 +1,16 @@
+{
+  "name": "contact-center-source",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "topic.creation.groups": "raw.contact_center.customer_cases",
+    "mongodb.hosts": "debezium/mongodb-contact-center:27017",
+    "mongodb.user": "user",
+    "mongodb.password": "password",
+    "mongodb.authsource": "contact-center",
+    "mongodb.name": "contact-center",
+    "sanitize.field.names": "true",
+    "collection.include.list": "cases",
+    "topic.creation.default.partitions": "1",
+    "topic.creation.default.replication.factor": "1"
+  }
+}

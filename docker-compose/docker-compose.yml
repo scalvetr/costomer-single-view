@@ -29,15 +29,20 @@ services:
       - broker
 
   postgresql-core-banking:
-    image: "bitnami/postgresql:11.14.0-debian-10-r17"
+    #image: "bitnami/postgresql:14.1.0"
+    image: "postgres:14.1"
     ports:
       - "5432:5432"
     environment:
-      POSTGRESQL_USERNAME: "user"
-      POSTGRESQL_PASSWORD: "password"
-      POSTGRESQL_DATABASE: "core-banking"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "core-banking"
     volumes:
       - "../schemas/core-banking.ddl:/docker-entrypoint-initdb.d/core-banking.sql"
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
 
   # https://github.com/bitnami/bitnami-docker-mongodb#setting-up-replication
   mongodb-contact-center:
