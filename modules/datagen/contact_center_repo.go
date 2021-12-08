@@ -82,11 +82,20 @@ func (r ContactCenterRepo) GetOpenCase(customerId string) *CaseStruct {
 func (r ContactCenterRepo) StoreCase(caseStruct CaseStruct) primitive.ObjectID {
 	ctx, _, collection := r.init()
 
-	res, err := collection.InsertOne(ctx, caseStruct)
-	if err != nil {
-		panic(err)
+	if caseStruct.ID.IsZero() {
+		res, err := collection.InsertOne(ctx, caseStruct)
+		if err != nil {
+			panic(err)
+		}
+		return res.InsertedID.(primitive.ObjectID)
+	} else {
+		res, err := collection.UpdateByID(ctx, caseStruct.ID, caseStruct)
+		if err != nil {
+			panic(err)
+		}
+		return res.UpsertedID.(primitive.ObjectID)
+
 	}
-	return res.InsertedID.(primitive.ObjectID)
 
 }
 
