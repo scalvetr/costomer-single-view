@@ -43,6 +43,14 @@ variable "postgresql_password" {
   type = string
   default = "password"
 }
+variable "postgresql_replication_username" {
+  type = string
+  default = "replication-user"
+}
+variable "postgresql_replication_password" {
+  type = string
+  default = "password"
+}
 
 variable "mongodb_database" {
   type = string

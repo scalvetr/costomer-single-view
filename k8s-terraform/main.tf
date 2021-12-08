@@ -53,8 +53,8 @@ resource "kubernetes_config_map" "cp-kafka-connect-init-script" {
 echo "[INIT] Installing Additional Connectors"
 echo "[INIT] confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1"
 confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1
-echo "[INIT] confluent-hub install --no-prompt debezium/debezium-connector-mongodb:1.7.1"
-confluent-hub install --no-prompt debezium/debezium-connector-mongodb:1.7.1
+echo "[INIT] confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.6.1"
+confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.6.1
 EOF
   }
 }
@@ -214,6 +214,27 @@ resource "helm_release" "postgresql-core-banking" {
   set {
     name  = "postgresqlPassword"
     value = var.postgresql_password
+  }
+  # See: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/templates/_helpers.tpl#L105
+  # See: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/templates/statefulset.yaml#L205
+  set {
+    name  = "global.postgresql.replicationUser"
+    value = var.postgresql_replication_username
+  }
+  # See: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml#L31
+  set {
+    name  = "global.postgresql.replicationPassword"
+    value = var.postgresql_replication_password
+  }
+
+  # See: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml#L249
+  set {
+    name  = "extraEnv[0].name"
+    value = "POSTGRESQL_WAL_LEVEL"
+  }
+  set {
+    name  = "extraEnv[0].value"
+    value = "logical"
   }
 }
 
