@@ -1,0 +1,54 @@
+{
+  "title": "case",
+  "required": [
+    "_id",
+    "case_id",
+    "customer_id",
+    "title",
+    "creation_timestamp"
+  ],
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
+    },
+    "case_id": {
+      "bsonType": "string"
+    },
+    "customer_id": {
+      "bsonType": "string"
+    },
+    "title": {
+      "bsonType": "string"
+    },
+    "creation_timestamp": {
+      "bsonType": "string",
+      "format": "date-time"
+    },
+    "communications": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "object",
+        "required": [
+          "communication_id",
+          "type",
+          "text",
+          "notes"
+        ],
+        "properties": {
+          "communication_id": {
+            "bsonType": "string"
+          },
+          "type": {
+            "bsonType": "string"
+          },
+          "text": {
+            "bsonType": "string"
+          },
+          "notes": {
+            "bsonType": "string"
+          }
+        }
+      }
+    }
+  }
+}

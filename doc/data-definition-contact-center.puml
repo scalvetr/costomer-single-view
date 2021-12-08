@@ -7,12 +7,13 @@ yamlDiagram {
 }
 </style>
 
-caseId: String
-customerId: String
+_id: String
+case_id: String
+customer_id: String
 title: String
 creation_timestamp: Timestamp
 communications:
-    - id: Long
+    - communication_id: String
       timestamp: Timestamp
       type: [phone, email]
       text: String

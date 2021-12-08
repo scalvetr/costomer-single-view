@@ -32,6 +32,8 @@ Contact Center (Mongo DB - BSON)
 
 ![Contact Center](doc/data-definition-contact-center.png)
 
+See: [source](schemas/contact-center.json)
+
 Core Banking (Postgresql - DDL)
 
 ![Core Banking](doc/data-definition-core-banking.png)
