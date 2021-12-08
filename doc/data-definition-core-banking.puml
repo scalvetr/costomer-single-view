@@ -26,7 +26,7 @@ status : VARCHAR(10)
 }
 
 entity "BOOKING" as booking {
-* booking_id : number <<generated>>
+* booking_id : NUMBER <<generated>>
 ---
 * amount : NUMBER(20,3)
 description : VARCHAR(250)

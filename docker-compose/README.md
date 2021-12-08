@@ -27,4 +27,4 @@ docker-compose -p tfm \
 up -d
 ```
 
-Services exposed
+Control center accessible through the following URL: http://localhost:9021/
