@@ -139,7 +139,7 @@ resource "helm_release" "confluent" {
     name = "cp-kafka-connect.replicaCount"
     value = "1"
   }
-
+  # see: https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-kafka-connect/templates/deployment.yaml#L111
   set {
     name  = "cp-kafka-connect.customEnv.CUSTOM_SCRIPT_PATH"
     value = "/etc/config/init-script.sh"
