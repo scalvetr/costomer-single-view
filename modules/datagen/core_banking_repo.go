@@ -58,7 +58,7 @@ func (r CoreBankingRepo) GetOpenAccount(customerId string) *AccountStruct {
 		scan.Row(&account, rows)
 		return &account
 	}
-	//defer rows.Close()
+	defer rows.Close()
 	return nil
 }
 
@@ -93,12 +93,12 @@ func (r CoreBankingRepo) GetAccount(accountId int32) AccountStruct {
 	}
 	var account AccountStruct
 	scan.Row(&account, rows)
-	//defer rows.Close()
+	defer rows.Close()
 	return account
 
 }
 func (r CoreBankingRepo) UpdateAccountBalance(accountId int32, balance float64) AccountStruct {
-	_, err := r.db.Query(`UPDATE account 
+	rows, err := r.db.Query(`UPDATE account 
 	    SET balance = $1
 	    WHERE account_id = $2`,
 		balance,
@@ -107,6 +107,7 @@ func (r CoreBankingRepo) UpdateAccountBalance(accountId int32, balance float64) 
 		panic(err)
 	}
 
+	defer rows.Close()
 	return r.GetAccount(accountId)
 
 }
