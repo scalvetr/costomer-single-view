@@ -23,7 +23,7 @@ func main() {
 	contactCenterDbUri := GetEnv("CONTACT_CENTER_DB_URI", "mongodb://localhost:27017")
 	contactCenterDbUser := GetEnv("CONTACT_CENTER_DB_USER", "user")
 	contactCenterDbPassword := GetEnv("CONTACT_CENTER_DB_PASSWORD", "password")
-	contactCenterDbName := GetEnv("CONTACT_CENTER_DB_NAME", "core-banking")
+	contactCenterDbName := GetEnv("CONTACT_CENTER_DB_NAME", "contact-center")
 
 	flag.Parse()
 	log.Printf("keySchemaFile: %v\n", *keySchemaFile)
@@ -51,6 +51,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer kafkaProducer.Close()
 
 	repo := BuildCustomerRepo(PgDbConfig{
 		DbHost:     coreBankingDbHost,
@@ -64,6 +65,7 @@ func main() {
 		DbPassword: contactCenterDbPassword,
 		DbName:     contactCenterDbName,
 	})
+	defer repo.Close()
 
 	for {
 		// Dummy: ms-customer -> produce to kafka
@@ -84,7 +86,9 @@ func main() {
 
 		// Dummy: Contact Center -> produce to MySql
 		c := repo.NextCase(customer)
+		log.Printf("NextCase(%v) = case_id: %v, _id= %v\n", customer.CustomerId, c.CaseId, c.ID)
 		time.Sleep(time.Second * 1)
-		repo.CreateCommunication(c)
+		id, communication := repo.CreateCommunication(c)
+		log.Printf("CreateCommunication(%v) = _id=%v, communication=%s\n", c.CaseId, id, communication)
 	}
 }

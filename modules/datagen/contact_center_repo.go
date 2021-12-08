@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"math/rand"
@@ -19,35 +20,40 @@ type MongoDbConfig struct {
 }
 type ContactCenterRepo struct {
 	dbConfig MongoDbConfig
-	client   mongo.Client
 }
 
 func BuildContactCenterRepo(dbConfig MongoDbConfig) ContactCenterRepo {
-	localClient, err := mongo.NewClient(options.Client().SetAuth(options.Credential{
-		Username: dbConfig.DbUser,
-		Password: dbConfig.DbPassword,
-	}).ApplyURI(dbConfig.DbUri))
-
-	if err != nil {
-		panic(err)
-	}
 	return ContactCenterRepo{
-		client:   *localClient,
 		dbConfig: dbConfig,
 	}
 }
 
 func (r ContactCenterRepo) init() (context.Context, mongo.Database, mongo.Collection) {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	err := r.client.Connect(ctx)
+	client, err := mongo.NewClient(options.Client().SetAuth(options.Credential{
+		AuthSource: r.dbConfig.DbName,
+		Username:   r.dbConfig.DbUser,
+		Password:   r.dbConfig.DbPassword,
+	}).ApplyURI(r.dbConfig.DbUri))
+
 	if err != nil {
 		panic(err)
 	}
-	defer r.client.Disconnect(ctx)
-	db := r.client.Database(r.dbConfig.DbName)
-	err = db.CreateCollection(ctx, collectionName)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
 	if err != nil {
 		panic(err)
+	}
+	db := client.Database(r.dbConfig.DbName)
+
+	collectionList, err := db.ListCollections(ctx, bson.M{"name": collectionName})
+	if err != nil {
+		panic(err)
+	}
+	if !collectionList.Next(ctx) {
+		err = db.CreateCollection(ctx, collectionName)
+		if err != nil {
+			panic(err)
+		}
 	}
 	collection := db.Collection(collectionName)
 
@@ -73,19 +79,22 @@ func (r ContactCenterRepo) GetOpenCase(customerId string) *CaseStruct {
 	return nil
 }
 
-func (r ContactCenterRepo) StoreCase(caseStruct CaseStruct) CaseStruct {
+func (r ContactCenterRepo) StoreCase(caseStruct CaseStruct) primitive.ObjectID {
 	ctx, _, collection := r.init()
 
 	res, err := collection.InsertOne(ctx, caseStruct)
 	if err != nil {
 		panic(err)
 	}
+	return res.InsertedID.(primitive.ObjectID)
 
-	var result CaseStruct
-	err = collection.FindOne(ctx, bson.M{"_id": res.InsertedID}).Decode(result)
-	if err != nil {
-		panic(err)
-	}
-	return result
+}
 
+func (r ContactCenterRepo) Close() error {
+	//err := r.client.Disconnect(context.TODO())
+	//if err == nil {
+	//	fmt.Println("Connection to MongoDB closed.")
+	//}
+	//return err
+	return nil
 }

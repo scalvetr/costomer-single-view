@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"math/rand"
 	"strings"
@@ -130,17 +131,17 @@ func (r CustomerRepo) NextCase(customer CustomerStruct) CaseStruct {
 			return *c
 		}
 	}
-	c := r.contactCenterRepo.StoreCase(CaseStruct{
+	c := CaseStruct{
 		CaseId:            uuid.New().String(),
 		CustomerId:        customer.CustomerId,
 		Title:             r.faker.Lorem().Sentence(r.random.Intn(15)),
 		CreationTimestamp: time.Now(),
 		Communications:    []CaseCommunicationStruct{},
-	})
+	}
 	return c
 }
 
-func (r CustomerRepo) CreateCommunication(c CaseStruct) CaseCommunicationStruct {
+func (r CustomerRepo) CreateCommunication(c CaseStruct) (primitive.ObjectID, CaseCommunicationStruct) {
 	communication := CaseCommunicationStruct{
 		CommunicationId: uuid.New().String(),
 		Text:            r.faker.Lorem().Sentence(r.random.Intn(15)),
@@ -148,6 +149,17 @@ func (r CustomerRepo) CreateCommunication(c CaseStruct) CaseCommunicationStruct 
 		Notes:           r.faker.Lorem().Sentence(r.random.Intn(25)),
 	}
 	c.Communications = append(c.Communications, communication)
-	r.contactCenterRepo.StoreCase(c)
-	return communication
+	caseId := r.contactCenterRepo.StoreCase(c)
+	return caseId, communication
+}
+
+func (r CustomerRepo) Close() {
+	err := r.contactCenterRepo.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = r.coreBankingRepo.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

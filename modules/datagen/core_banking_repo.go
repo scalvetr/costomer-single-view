@@ -136,3 +136,11 @@ func (r CoreBankingRepo) StoreBooking(booking BookingStruct) BookingStruct {
 	}
 	return booking
 }
+
+func (r CoreBankingRepo) Close() error {
+	err := r.db.Close()
+	if err == nil {
+		fmt.Println("Connection to Postgresql closed.")
+	}
+	return err
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/mycujoo/go-kafka-avro/v2"
 	"log"
@@ -43,4 +44,9 @@ func (p KafkaProducer) ProduceCustomer(customer CustomerStruct) {
 		panic(err)
 	}
 	log.Printf("item sent: %v\n", customer)
+}
+
+func (p KafkaProducer) Close() {
+	p.producer.Close()
+	fmt.Println("Kafka producer closed.")
 }
