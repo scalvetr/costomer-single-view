@@ -2,17 +2,23 @@
   "name": "core-banking-source",
   "config": {
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-    "topic.creation.groups": "raw.core_banking.customer_accounts",
     "database.server.name": "core-banking",
     "database.hostname": "postgresql-core-banking",
     "database.port": "5432",
-    "database.user": "replication-user",
+    "database.user": "user",
     "database.password": "password",
     "database.dbname": "core-banking",
     "plugin.name": "wal2json",
-    "table.include.list": "account",
-    "schema.include.list": "public",
+    "table.include.list": "public.account",
     "topic.creation.default.partitions": "1",
-    "topic.creation.default.replication.factor": "1"
+    "topic.creation.default.replication.factor": "1",
+    "topic.creation.enable": true,
+    "transforms": "Reroute",
+    "transforms.Reroute.type": "io.debezium.transforms.ByLogicalTableRouter",
+    "transforms.Reroute.topic.regex": "core-banking.public\\.(.*)",
+    "transforms.Reroute.topic.replacement": "raw.core_banking.$1",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
   }
 }
