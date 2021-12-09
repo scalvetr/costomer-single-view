@@ -20,9 +20,14 @@ services:
     volumes:
       - "../schemas/customer-key.avsc:/schemas/customer-key.avsc"
       - "../schemas/customer-value.avsc:/schemas/customer-value.avsc"
-    command:
-      - "-key-schema-file=/schemas/customer-key.avsc"
-      - "-value-schema-file=/schemas/customer-value.avsc"
+      - "./wait-for-it.sh:/wait-for-it.sh"
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "/wait-for-it.sh schema-registry:8081 -- /go/bin/app -key-schema-file=/schemas/customer-key.avsc -value-schema-file=/schemas/customer-value.avsc"
+    #command:
+    #  - "-key-schema-file=/schemas/customer-key.avsc"
+    #  - "-value-schema-file=/schemas/customer-value.avsc"
     depends_on:
       - mongodb-contact-center
       - postgresql-core-banking
