@@ -50,9 +50,12 @@ resource "kubernetes_config_map" "cp-kafka-connect-init-script" {
   data = {
     "init-script.sh" = <<EOF
 #!/bin/bash
-echo "[INIT] Installing Additional Connectors"
+echo "[INIT] confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:7.0.0"
+confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:7.0.0
 echo "[INIT] confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1"
 confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.7.1
+echo "[INIT] confluent-hub install --no-prompt debezium/debezium-connector-mongodb:1.7.1"
+confluent-hub install --no-prompt debezium/debezium-connector-mongodb:1.7.1
 echo "[INIT] confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.6.1"
 confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:1.6.1
 EOF

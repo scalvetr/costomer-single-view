@@ -1,11 +1,20 @@
 {
   "name": "contact-center-source",
   "config": {
-    "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
     "connection.uri": "mongodb://user:password@mongodb-contact-center/contact-center",
+    "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
+
     "database": "contact-center",
     "collection": "cases",
-    "output.format.key": "json",
-    "output.format.value": "json"
+    "topic.namespace.map": "{\"contact-center\":\"raw.contact_center.default\",\"contact-center.cases\":\"raw.contact_center.customer_cases\"}",
+
+    "publish.full.document.only": true,
+    "output.format.value": "schema",
+    "output.schema.value": "{\"namespace\":\"edu.uoc.scalvetr\",\"type\":\"record\",\"name\":\"Case\",\"fields\":[{\"name\":\"_id\",\"type\":\"string\"},{\"name\":\"case_id\",\"type\":\"string\"},{\"name\":\"customer_id\",\"type\":\"string\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"creation_timestamp\",\"type\":\"string\"},{\"name\":\"communications\",\"type\":{\"type\":\"array\",\"items\":{\"name\":\"Communication\",\"type\":\"record\",\"fields\":[{\"name\":\"communication_id\",\"type\":\"string\"},{\"name\":\"type\",\"type\":\"string\"},{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"notes\",\"type\":\"string\"}]}}}]}",
+
+    "value.converter.schemas.enable": "true",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
   }
 }

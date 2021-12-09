@@ -1,0 +1,24 @@
+{"namespace": "edu.uoc.scalvetr",
+ "type": "record",
+ "name": "Case",
+ "fields": [
+    {"name": "_id", "type": "string"},
+    {"name": "case_id", "type": "string"},
+    {"name": "customer_id", "type": "string"},
+    {"name": "title", "type": "string"},
+    {"name": "creation_timestamp", "type": "string"},
+    {"name": "communications", "type":{
+        "type": "array",
+        "items":{
+           "name":"Communication",
+           "type":"record",
+           "fields":[
+               {"name":"communication_id", "type":"string"},
+               {"name":"type", "type":"string"},
+               {"name":"text", "type":"string"},
+               {"name":"notes", "type":"string"}
+           ]
+       }
+    }}
+ ]
+}
