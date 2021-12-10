@@ -14,7 +14,7 @@ classDiagram {
 }
 </style>
 
-entity "ACCOUNT" as account {
+entity "ACCOUNTS" as accounts {
 * account_id : NUMBER <<generated>>
 ---
 * customer_id : VARCHAR(20)
@@ -25,7 +25,7 @@ cancellation_date : DATE
 status : VARCHAR(10)
 }
 
-entity "BOOKING" as booking {
+entity "BOOKINGS" as bookings {
 * booking_id : NUMBER <<generated>>
 ---
 * amount : NUMBER(20,3)
@@ -36,6 +36,6 @@ fee : NUMBER(20,3)
 taxes : NUMBER(20,3)
 }
 
-account ||..o{ booking
+accounts ||..o{ bookings
 
 @enduml

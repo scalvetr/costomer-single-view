@@ -45,7 +45,7 @@ func (r CoreBankingRepo) GetOpenAccount(customerId string) *AccountStruct {
        creation_date, 
        cancellation_date, 
        status 
-	FROM account 
+	FROM accounts 
 	WHERE customer_id = $1 
 	AND status = 'OPEN'
 	ORDER BY RANDOM() LIMIT 1`, customerId)
@@ -64,7 +64,7 @@ func (r CoreBankingRepo) GetOpenAccount(customerId string) *AccountStruct {
 
 func (r CoreBankingRepo) StoreAccount(account AccountStruct) AccountStruct {
 	r.db.QueryRow(`INSERT 
-		INTO account (
+		INTO accounts (
 					  customer_id,
 					  iban,
 					  balance,
@@ -84,7 +84,7 @@ func (r CoreBankingRepo) StoreAccount(account AccountStruct) AccountStruct {
 }
 
 func (r CoreBankingRepo) GetAccount(accountId int32) AccountStruct {
-	rows, err := r.db.Query(`SELECT * FROM account
+	rows, err := r.db.Query(`SELECT * FROM accounts
 		WHERE account_id = $1`,
 		accountId)
 
@@ -98,7 +98,7 @@ func (r CoreBankingRepo) GetAccount(accountId int32) AccountStruct {
 
 }
 func (r CoreBankingRepo) UpdateAccountBalance(accountId int32, balance float64) AccountStruct {
-	rows, err := r.db.Query(`UPDATE account 
+	rows, err := r.db.Query(`UPDATE accounts 
 	    SET balance = $1
 	    WHERE account_id = $2`,
 		balance,
@@ -114,7 +114,7 @@ func (r CoreBankingRepo) UpdateAccountBalance(accountId int32, balance float64) 
 
 func (r CoreBankingRepo) StoreBooking(booking BookingStruct) BookingStruct {
 	err := r.db.QueryRow(`INSERT 
-			INTO booking (
+			INTO bookings (
 						  account_id,
 						  amount,
 						  description,

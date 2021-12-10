@@ -23,7 +23,7 @@ CREATE SOURCE CONNECTOR `core-banking-source` WITH(
     'database.password'='password',
     'database.dbname'='core-banking',
     'plugin.name'='wal2json',
-    'table.include.list'='public.account',
+    'table.include.list'='public.accounts,public.bookings',
     'topic.creation.default.partitions'='1',
     'topic.creation.default.replication.factor'='1',
     'topic.creation.enable'='true',
@@ -37,7 +37,11 @@ CREATE SOURCE CONNECTOR `core-banking-source` WITH(
 );
 
 CREATE STREAM debezium_core_banking_accounts WITH (
-    kafka_topic = 'debezium.core_banking.account',
+    kafka_topic = 'debezium.core_banking.accounts',
+    value_format = 'avro'
+);
+CREATE STREAM debezium_core_banking_bookings WITH (
+    kafka_topic = 'debezium.core_banking.bookings',
     value_format = 'avro'
 );
 
