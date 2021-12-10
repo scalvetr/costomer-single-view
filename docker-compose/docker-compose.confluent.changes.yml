@@ -3,19 +3,16 @@ services:
 
   connect:
     command:
-      - bash
-      - -c
+      - "/bin/sh"
+      - "-c"
       - "/etc/config/init-script.sh"
     volumes:
-      - ./kafka-connect/config/init-script.sh:/etc/config/init-script.sh
+      - "./kafka-connect/config/init-script.sh:/etc/config/init-script.sh"
   ksqldb-cli:
     entrypoint:
-     - "/bin/ksql"
-     #- "--execute"
-     #- "SHOW STREAMS;"
-     - "--file"
-     - "/etc/config/init_database.sql"
-     - "--"
-     - "http://ksqldb-server:8088"
+      - "/bin/sh"
+      - "-c"
+      - "/wait-for-it.sh ksqldb-server:8088 -s -t 120 -- /bin/ksql --file /etc/config/init_database.sql -- http://ksqldb-server:8088"
     volumes:
-      - ../config/ksqldb/init_database.sql:/etc/config/init_database.sql
+      - "../config/ksqldb/init_database.sql:/etc/config/init_database.sql"
+      - "./wait-for-it.sh:/wait-for-it.sh"
