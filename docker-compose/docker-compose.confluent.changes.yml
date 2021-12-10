@@ -8,3 +8,14 @@ services:
       - "/etc/config/init-script.sh"
     volumes:
       - ./kafka-connect/config/init-script.sh:/etc/config/init-script.sh
+  ksqldb-cli:
+    entrypoint:
+     - "/bin/ksql"
+     #- "--execute"
+     #- "SHOW STREAMS;"
+     - "--file"
+     - "/etc/config/init_database.sql"
+     - "--"
+     - "http://ksqldb-server:8088"
+    volumes:
+      - ../config/ksqldb/init_database.sql:/etc/config/init_database.sql
