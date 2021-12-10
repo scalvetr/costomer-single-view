@@ -12,7 +12,7 @@ services:
     entrypoint:
       - "/bin/sh"
       - "-c"
-      - "/wait-for-it.sh ksqldb-server:8088 -s -t 120 -- /bin/ksql --file /etc/config/init_database.sql -- http://ksqldb-server:8088"
+      - "/wait-for-it.sh ksqldb-server:8088 -s -t 120 -- /config/setup.sh"
     volumes:
-      - "../config/ksqldb/init_database.sql:/etc/config/init_database.sql"
+      - "../config/ksqldb/:/config/"
       - "./wait-for-it.sh:/wait-for-it.sh"

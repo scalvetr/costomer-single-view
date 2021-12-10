@@ -35,7 +35,8 @@ rectangle "Data Pipelines" as pipelines {
     }
     rectangle "Message Broker\n<<Kafka>>" as message_broker {
         queue "event.customer.entity" as topic_customer_entity
-        queue "raw.core_banking.customer_accounts" as topic_core_banking_customer_accounts
+        queue "raw.core_banking.bookings" as topic_core_banking_bookings
+        queue "raw.core_banking.accounts" as topic_core_banking_accounts
         queue "raw.contact_center.customer_cases" as topic_contact_center_customer_cases
         queue "event.customer_single_view" as topic_customer_single_view
        }
@@ -68,9 +69,13 @@ egestion_layer -[hidden]u-> processing_layer
 
 processing_layer -> message_broker
 
-topic_customer_entity -[hidden]d-> topic_core_banking_customer_accounts
-topic_core_banking_customer_accounts -[hidden]d-> topic_contact_center_customer_cases
-topic_customer_single_view -[hidden]l-> topic_core_banking_customer_accounts
+topic_customer_entity -[hidden]d-> topic_core_banking_accounts
+topic_core_banking_accounts -[hidden]d-> topic_core_banking_bookings
+topic_core_banking_bookings -[hidden]d-> topic_contact_center_customer_cases
+topic_customer_single_view -[hidden]d-> topic_customer_entity
+topic_customer_single_view -[hidden]d-> topic_core_banking_bookings
+topic_customer_single_view -[hidden]d-> topic_contact_center_customer_cases
+topic_customer_single_view -[hidden]d-> topic_core_banking_accounts
 
 ms_customer -[hidden]d-> db_core_banking
 db_core_banking -[hidden]d-> db_contact_center
@@ -81,7 +86,8 @@ db_core_banking -r-> ingest_mysql_debezium
 db_contact_center -r-> ingest_mongodb_debezium
 
 ms_customer -r-> topic_customer_entity
-ingest_mysql_debezium -r-> topic_core_banking_customer_accounts
+ingest_mysql_debezium -r-> topic_core_banking_accounts
+ingest_mysql_debezium -r-> topic_core_banking_bookings
 ingest_mongodb_debezium -r-> topic_contact_center_customer_cases
 
 egest_mongodb_debezium -r-> db_customer_single_view
