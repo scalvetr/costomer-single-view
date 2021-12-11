@@ -1,11 +1,15 @@
 CREATE STREAM event_core_banking_accounts
-  AS SELECT
-    c.AFTER->ACCOUNT_ID AS ACCOUNT_ID,
-    c.AFTER->CUSTOMER_ID AS CUSTOMER_ID,
-    c.AFTER->IBAN AS IBAN,
-    c.AFTER->BALANCE AS BALANCE,
-    c.AFTER->CREATION_DATE AS CREATION_DATE,
-    c.AFTER->CANCELLATION_DATE AS CANCELLATION_DATE,
-    c.AFTER->STATUS AS STATUS
-  FROM raw_core_banking_accounts c
-PARTITION BY c.AFTER->CUSTOMER_ID;
+AS
+SELECT c.ACCOUNT_ID        AS ACCOUNT_ID,
+       c.CUSTOMER_ID       AS CUSTOMER_ID,
+       c.IBAN              AS IBAN,
+       c.BALANCE           AS BALANCE,
+       c.CREATION_DATE     AS CREATION_DATE,
+       c.CANCELLATION_DATE AS CANCELLATION_DATE,
+       c.STATUS            AS STATUS
+FROM raw_core_banking_accounts c PARTITION BY c.CUSTOMER_ID;
+
+CREATE STREAM event_contact_center_customer_cases
+AS
+SELECT *
+FROM raw_contact_center_customer_cases c PARTITION BY c.CUSTOMER_ID;
