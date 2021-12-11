@@ -24,7 +24,10 @@ services:
     entrypoint:
       - "/bin/sh"
       - "-c"
-      - "/wait-for-it.sh schema-registry:8081 -s -t 120 -- /go/bin/app -key-schema-file=/schemas/customer-key.avsc -value-schema-file=/schemas/customer-value.avsc"
+      - >
+        /wait-for-it.sh schema-registry:8081 -s -t 120 --
+        /wait-for-it.sh broker:9092 -s -t 60 --
+        /go/bin/app -key-schema-file=/schemas/customer-key.avsc -value-schema-file=/schemas/customer-value.avsc
     #command:
     #  - "-key-schema-file=/schemas/customer-key.avsc"
     #  - "-value-schema-file=/schemas/customer-value.avsc"
