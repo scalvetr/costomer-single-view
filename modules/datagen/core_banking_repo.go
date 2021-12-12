@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/blockloop/scan"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 type PgDbConfig struct {
@@ -63,7 +64,7 @@ func (r CoreBankingRepo) GetOpenAccount(customerId string) *AccountStruct {
 }
 
 func (r CoreBankingRepo) StoreAccount(account AccountStruct) AccountStruct {
-	r.db.QueryRow(`INSERT 
+	err := r.db.QueryRow(`INSERT 
 		INTO accounts (
 					  customer_id,
 					  iban,
@@ -79,6 +80,10 @@ func (r CoreBankingRepo) StoreAccount(account AccountStruct) AccountStruct {
 		account.CreationDate,
 		account.CancellationDate,
 		account.Status.String()).Scan(&account.AccountId)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("Created a new account with id=%v\n", account.AccountId)
 	return account
 
 }

@@ -70,12 +70,13 @@ type CaseStruct struct {
 	CaseId            string                    `bson:"case_id,omitempty"`
 	CustomerId        string                    `bson:"customer_id,omitempty"`
 	Title             string                    `bson:"title,omitempty"`
-	CreationTimestamp time.Time                 `bson:"creation_timestamp,omitempty"`
+	CreationTimestamp primitive.DateTime        `bson:"creation_timestamp,omitempty"`
 	Communications    []CaseCommunicationStruct `bson:"communications,omitempty"`
 }
 type CaseCommunicationStruct struct {
-	CommunicationId string `bson:"communication_id,omitempty"`
-	Type            string `bson:"type,omitempty"`
-	Text            string `bson:"text,omitempty"`
-	Notes           string `bson:"notes,omitempty"`
+	CommunicationId string             `bson:"communication_id,omitempty"`
+	Type            string             `bson:"type,omitempty"`
+	Text            string             `bson:"text,omitempty"`
+	Notes           string             `bson:"notes,omitempty"`
+	Timestamp       primitive.DateTime `bson:"timestamp,omitempty"`
 }

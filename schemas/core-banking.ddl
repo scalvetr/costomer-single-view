@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS accounts
 (
     account_id        SERIAL         NOT NULL PRIMARY KEY,
-    customer_id       VARCHAR(20)    NOT NULL,
+    customer_id       VARCHAR(50)    NOT NULL,
     iban              VARCHAR(35)    NOT NULL,
     balance           DECIMAL(20, 3) NOT NULL,
     creation_date     DATE           NOT NULL,

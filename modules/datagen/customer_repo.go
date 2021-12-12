@@ -89,6 +89,7 @@ func (r CustomerRepo) NextAccount(customer CustomerStruct) AccountStruct {
 			return *account
 		}
 	}
+	log.Printf("Creating a new one for customer %v\n", customer.CustomerId)
 	faker := faker.New()
 	account := r.coreBankingRepo.StoreAccount(AccountStruct{
 		CustomerId:       customer.CustomerId,
@@ -135,7 +136,7 @@ func (r CustomerRepo) NextCase(customer CustomerStruct) CaseStruct {
 		CaseId:            uuid.New().String(),
 		CustomerId:        customer.CustomerId,
 		Title:             r.faker.Lorem().Sentence(r.random.Intn(15)),
-		CreationTimestamp: time.Now(),
+		CreationTimestamp: primitive.NewDateTimeFromTime(time.Now()),
 		Communications:    []CaseCommunicationStruct{},
 	}
 	return c
@@ -147,6 +148,7 @@ func (r CustomerRepo) CreateCommunication(c CaseStruct) (primitive.ObjectID, Cas
 		Text:            r.faker.Lorem().Sentence(r.random.Intn(15)),
 		Type:            r.faker.RandomStringElement([]string{"Mobile", "Web", "Phone"}),
 		Notes:           r.faker.Lorem().Sentence(r.random.Intn(25)),
+		Timestamp:       primitive.NewDateTimeFromTime(time.Now()),
 	}
 	c.Communications = append(c.Communications, communication)
 	caseId := r.contactCenterRepo.StoreCase(c)
