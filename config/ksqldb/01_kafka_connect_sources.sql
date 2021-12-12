@@ -36,6 +36,8 @@ WITH (
     'topic.creation.default.partitions'='1',
     'topic.creation.default.replication.factor'='1',
     'topic.creation.enable'='true',
+    --https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-decimal-types
+    'decimal.handling.mode'='double',
     'transforms'='reroute,unwrap',
     'transforms.reroute.type'='io.debezium.transforms.ByLogicalTableRouter',
     'transforms.reroute.topic.regex'='core-banking.public\.(.*)',

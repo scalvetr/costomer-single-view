@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS accounts
     customer_id       VARCHAR(50)    NOT NULL,
     iban              VARCHAR(35)    NOT NULL,
     balance           DECIMAL(20, 3) NOT NULL,
-    creation_date     DATE           NOT NULL,
-    cancellation_date DATE,
+    creation_date     TIMESTAMP      NOT NULL,
+    cancellation_date TIMESTAMP,
     status            VARCHAR(10)    NOT NULL
 );
 CREATE TABLE IF NOT EXISTS bookings
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS bookings
     account_id   INTEGER        NOT NULL,
     amount       DECIMAL(20, 3) NOT NULL,
     description  VARCHAR(250)   NOT NULL,
-    booking_date DATE           NOT NULL,
-    value_date   DATE,
+    booking_date TIMESTAMP      NOT NULL,
+    value_date   TIMESTAMP,
     fee          DECIMAL(20, 3) NOT NULL DEFAULT 0,
     taxes        DECIMAL(20, 3) NOT NULL DEFAULT 0,
     CONSTRAINT fk_account

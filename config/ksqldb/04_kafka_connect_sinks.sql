@@ -23,13 +23,13 @@ WITH (
     -- Collection names
     'topic.override.event_core_banking_accounts.collection'='accounts',
     'topic.override.event_core_banking_bookings.collection'='account_bookings',
-    'topic.override.event_contact_center_customer_cases.collection'='cases'
+    'topic.override.event_contact_center_customer_cases.collection'='cases',
 
     --# Write configuration
     -- 'delete.on.null.values'='true',
     -- 'writemodel.strategy'='com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy',
     -- Id Strategy
-    --'document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInKeyStrategy' -> _id field in key
-    --'post.processor.chain'='com.mongodb.kafka.connect.sink.processor.DocumentIdAdder'
-    --'topic.override.event_core_banking_accounts.document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy'
+    'post.processor.chain'='com.mongodb.kafka.connect.sink.processor.DocumentIdAdder',
+    'document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.FullKeyStrategy',
+    'topic.override.event_core_banking_bookings.document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy'
 );
