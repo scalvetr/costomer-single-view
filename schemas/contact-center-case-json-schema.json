@@ -46,6 +46,10 @@
           },
           "notes": {
             "bsonType": "string"
+          },
+          "timestamp": {
+            "bsonType": "string",
+            "format": "date-time"
           }
         }
       }
