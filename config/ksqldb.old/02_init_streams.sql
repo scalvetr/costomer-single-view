@@ -1,5 +1,3 @@
-SHOW STREAMS;
-
 CREATE STREAM raw_core_banking_accounts WITH (
     kafka_topic = 'raw_core_banking_accounts',
     value_format = 'avro'

@@ -48,7 +48,7 @@ export BOOTSTRAP_SERVERS="localhost:9092"
 
 # kubectl port-forward
 export SCHEMA_REGISTRY_URL="http://localhost:8081"
-export TOPIC_NAME="event.customer.entity"
+export TOPIC_NAME="event_customer_entity"
 
 go run *.go \
 --key-schema-file ${WORK_DIR}schemas/customer-key.avsc \

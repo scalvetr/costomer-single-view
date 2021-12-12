@@ -15,7 +15,7 @@ services:
       - >
         /wait-for-it.sh ksqldb-server:8088 -s -t 120 --
         /wait-for-it.sh schema-registry:8081 -s -t 60 --
-        /wait-for-it.sh connect:8083 -s -t 60 --
+        /wait-for-it.sh connect:8083 -s -t 120 --
         /config/setup.sh
     volumes:
       - "../config/ksqldb/:/config/"

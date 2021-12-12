@@ -14,6 +14,3 @@ sleep 1m
 
 echo "Run \"03_processing.sql\""
 /bin/ksql --file /config/03_processing.sql -- http://ksqldb-server:8088
-
-echo "Run \"04_kafka_connect_sinks.sql\""
-/bin/ksql --file /config/04_kafka_connect_sinks.sql -- http://ksqldb-server:8088

@@ -12,7 +12,7 @@ func main() {
 	// kafka
 	bootstrapServers := GetEnv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 	schemaRegistryUrl := GetEnv("KAFKA_SCHEMA_REGISTRY_URL", "http://localhost:8081")
-	topicName := GetEnv("KAFKA_TOPIC_NAME", "event.customer.entity")
+	topicName := GetEnv("KAFKA_TOPIC_NAME", "event_customer_entity")
 	// core banking
 	coreBankingDbHost := GetEnv("CORE_BANKING_DB_HOST", "localhost")
 	coreBankingDbPort := GetEnv("CORE_BANKING_DB_PORT", "5432")

@@ -5,7 +5,7 @@ services:
     build:
       context: ../modules/datagen
     environment:
-      KAFKA_TOPIC_NAME: "event.customer.entity"
+      KAFKA_TOPIC_NAME: "event_customer_entity"
       KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
       KAFKA_SCHEMA_REGISTRY_URL: "schema-registry:8081"
       CORE_BANKING_DB_HOST: "postgresql-core-banking"
@@ -69,3 +69,14 @@ services:
       #MONGODB_REPLICA_SET_NAME: "contact-center"
       MONGODB_REPLICA_SET_MODE: "primary"
       MONGODB_REPLICA_SET_KEY: "contactCenterRs1"
+
+  mongodb-customer-single-view:
+    image: "bitnami/mongodb:4.4.10-debian-10-r44"
+    ports:
+      - "27018:27017"
+    environment:
+      MONGODB_ROOT_USER: "admin"
+      MONGODB_ROOT_PASSWORD: "admin"
+      MONGODB_USERNAME: "user"
+      MONGODB_PASSWORD: "password"
+      MONGODB_DATABASE: "customer-single-view"

@@ -5,7 +5,7 @@ services:
     build:
       context: ../modules/datagen
     environment:
-      KAFKA_TOPIC_NAME: "event.customer.entity"
+      KAFKA_TOPIC_NAME: "event_customer_entity"
       KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
       KAFKA_SCHEMA_REGISTRY_URL: "schema-registry:8081"
       CORE_BANKING_DB_HOST: "postgresql-core-banking"

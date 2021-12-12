@@ -6,7 +6,7 @@
 
     "database": "contact-center",
     "collection": "cases",
-    "topic.namespace.map": "{\"contact-center\":\"raw.contact_center.default\",\"contact-center.cases\":\"raw.contact_center.customer_cases\"}",
+    "topic.namespace.map": "{\"contact-center\":\"raw.contact_center.default\",\"contact-center.cases\":\"raw_contact_center_customer_cases\"}",
 
     "publish.full.document.only": true,
     "output.format.value": "schema",

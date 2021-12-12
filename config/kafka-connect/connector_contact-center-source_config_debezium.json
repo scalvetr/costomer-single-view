@@ -2,7 +2,7 @@
   "name": "contact-center-source",
   "config": {
     "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
-    "topic.creation.groups": "raw.contact_center.customer_cases",
+    "topic.creation.groups": "raw_contact_center_customer_cases",
     "mongodb.hosts": "debezium/mongodb-contact-center:27017",
     "mongodb.user": "user",
     "mongodb.password": "password",

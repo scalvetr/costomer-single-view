@@ -14,7 +14,7 @@ function delete_schemas() {
 
 delete_schemas;
 #curl --request DELETE -sL \
-#     --url ${CP_SCHEMA_REGISTRY_URL}/subjects/event.customer.entity-key
+#     --url ${CP_SCHEMA_REGISTRY_URL}/subjects/event_customer_entity-key
 
 #curl --request DELETE -sL \
-#     --url ${CP_SCHEMA_REGISTRY_URL}/subjects/event.customer.entity-value
+#     --url ${CP_SCHEMA_REGISTRY_URL}/subjects/event_customer_entity-value

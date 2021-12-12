@@ -34,11 +34,11 @@ rectangle "Data Pipelines" as pipelines {
        component "MongoDb Debezium" as ingest_mongodb_debezium
     }
     rectangle "Message Broker\n<<Kafka>>" as message_broker {
-        queue "event.customer.entity" as topic_customer_entity
-        queue "raw.core_banking.bookings" as topic_core_banking_bookings
-        queue "raw.core_banking.accounts" as topic_core_banking_accounts
-        queue "raw.contact_center.customer_cases" as topic_contact_center_customer_cases
-        queue "event.customer_single_view" as topic_customer_single_view
+        queue "event_customer_entity" as topic_customer_entity
+        queue "raw_core_banking_bookings" as topic_core_banking_bookings
+        queue "raw_core_banking_accounts" as topic_core_banking_accounts
+        queue "raw_contact_center_customer_cases" as topic_contact_center_customer_cases
+        queue "EVENT_CUSTOMER_SINGLE_VIEW" as topic_customer_single_view
        }
 
     rectangle "Processing Layer" as processing_layer {
