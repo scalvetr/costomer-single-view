@@ -1,0 +1,23 @@
+{
+  "name": "customer-one-view-sink",
+  "config": {
+    "topic.override.event_core_banking_bookings.collection": "account_bookings",
+    "topic.override.event_contact_center_customer_cases.collection": "cases",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "topic.override.event_core_banking_accounts.collection": "accounts",
+    "name": "customer-one-view-sink",
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "topics": "event_customer_entity, event_core_banking_accounts, event_core_banking_bookings, event_contact_center_customer_cases",
+    "connection.uri": "mongodb://user:password@mongodb-customer-single-view/customer-single-view",
+    "database": "customer-single-view",
+    "collection": "customers",
+    "post.processor.chain": "com.mongodb.kafka.connect.sink.processor.DocumentIdAdder",
+    "key.projection.type": "none",
+    "key.projection.list": "",
+    "value.projection.type": "none",
+    "value.projection.list": "",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.FullKeyStrategy"
+  }
+}

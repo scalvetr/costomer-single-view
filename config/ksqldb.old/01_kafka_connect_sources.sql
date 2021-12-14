@@ -27,7 +27,7 @@ WITH (
     'transforms.valueToKey.type'='org.apache.kafka.connect.transforms.ValueToKey',
     'transforms.valueToKey.fields'='case_id',
     'transforms.extractKey.type'='org.apache.kafka.connect.transforms.ExtractField$Key',
-    'transforms.extractKey.field'='case_id'
+    'transforms.createKey.fields'='case_id'
 );
 
 CREATE
@@ -51,7 +51,7 @@ WITH (
     'value.converter'='io.confluent.connect.avro.AvroConverter',
     'value.converter.schema.registry.url'='http://schema-registry:8081',
     -- Partition by customer: https://debezium.io/documentation/reference/stable/transformations/topic-routing.html#_example
-    'message.key.columns'='(.*).accounts:account_id;(.*).bookings:account_id',
+    'message.key.columns'='(.*).accounts:account_id,id;(.*).bookings:account_id,id',
     'key.converter'='org.apache.kafka.connect.storage.StringConverter',
     --'key.converter'='io.confluent.connect.avro.AvroConverter',
     --'key.converter.schema.registry.url'='http://schema-registry:8081',
@@ -64,6 +64,6 @@ WITH (
     'transforms.reroute.key.enforce.uniqueness'= false,
     'transforms.unwrap.type'='io.debezium.transforms.ExtractNewRecordState',
     'transforms.extractKey.type'='org.apache.kafka.connect.transforms.ExtractField$Key',
-    'transforms.extractKey.field'='account_id'
+    'transforms.extractKey.fields'='id'
 
 );

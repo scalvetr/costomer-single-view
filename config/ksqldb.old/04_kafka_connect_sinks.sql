@@ -25,11 +25,8 @@ WITH (
     'topic.override.event_core_banking_bookings.collection'='account_bookings',
     'topic.override.event_contact_center_customer_cases.collection'='cases',
 
-    --# Write configuration
-    -- 'delete.on.null.values'='true',
-    -- 'writemodel.strategy'='com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy',
     -- Id Strategy
     'post.processor.chain'='com.mongodb.kafka.connect.sink.processor.DocumentIdAdder',
-    'document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.FullKeyStrategy',
-    'topic.override.event_core_banking_bookings.document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy'
+    'document.id.strategy'='com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy',
+
 );

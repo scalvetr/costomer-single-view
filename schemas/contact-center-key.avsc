@@ -1,15 +1,6 @@
 {
-    "name":"CustomerId",
-    "type":"record",
     "namespace":"edu.uoc.scalvetr",
-    "fields": [{
-        "name": "fullDocument",
-        "type":{
-            "name": "fullDocument",
-            "type": "record",
-            "fields":[{
-                "name":"customer_id","type": "string"
-            }]
-        }
-    }]
+    "type":"record",
+    "name":"CaseId",
+    "fields":[{"name":"case_id","type":"string"}]
 }

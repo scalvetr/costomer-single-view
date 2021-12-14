@@ -1,7 +1,22 @@
 {
   "name": "core-banking-source",
   "config": {
+    "topic.creation.default.partitions": "1",
+    "transforms.reroute.type": "io.debezium.transforms.ByLogicalTableRouter",
+    "topic.creation.default.replication.factor": "1",
+    "transforms.reroute.topic.regex": "core-banking.public\\.(.*)",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.reroute.topic.replacement": "raw_core_banking_$1",
+    "transforms.reroute.key.field.name": "table",
+    "topic.creation.enable": "true",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "transforms.reroute.key.enforce.uniqueness": "false",
+    "key.converter.schema.registry.url": "http://schema-registry:8081",
+    "name": "core-banking-source",
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "transforms": "reroute, unwrap",
     "database.server.name": "core-banking",
     "database.hostname": "postgresql-core-banking",
     "database.port": "5432",
@@ -9,16 +24,8 @@
     "database.password": "password",
     "database.dbname": "core-banking",
     "plugin.name": "wal2json",
-    "table.include.list": "public.account",
-    "topic.creation.default.partitions": "1",
-    "topic.creation.default.replication.factor": "1",
-    "topic.creation.enable": true,
-    "transforms": "Reroute",
-    "transforms.Reroute.type": "io.debezium.transforms.ByLogicalTableRouter",
-    "transforms.Reroute.topic.regex": "core-banking.public\\.(.*)",
-    "transforms.Reroute.topic.replacement": "raw.core_banking.$1",
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "value.converter": "io.confluent.connect.avro.AvroConverter",
-    "value.converter.schema.registry.url": "http://schema-registry:8081"
+    "decimal.handling.mode": "double",
+    "table.include.list": "public.accounts, public.bookings",
+    "message.key.columns": "(.*).accounts:account_id,account_id;(.*).bookings:account_id,account_id"
   }
 }
