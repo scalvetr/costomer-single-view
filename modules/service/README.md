@@ -1,26 +1,8 @@
 # Service
 
-## Build
+## :gear: Build
 Build go program
 ```shell
-cd models
-go mod tidy
-go build
-
-cd ../config
-go mod tidy
-go build
-
-cd ../controllers
-go mod tidy
-go build
-
-cd ../routes
-go mod tidy
-go build
-
-cd ..
-go mod tidy
 go build
 ```
 
@@ -33,46 +15,19 @@ docker build . -t service:latest
 docker run --rm --name=datagen datagen:latest
 ```
 
-## Libs
-```
-module datagen
-
-go 1.17
-
-require (
-	github.com/blockloop/scan v1.3.0
-	github.com/confluentinc/confluent-kafka-go v1.7.0
-	github.com/google/uuid v1.3.0
-	github.com/jaswdr/faker v1.8.0
-	github.com/lib/pq v1.10.4
-	github.com/mycujoo/go-kafka-avro/v2 v2.0.0
-	go.mongodb.org/mongo-driver v1.8.0
-)
-```
-
+## :rocket: Run
 ```shell
+export PORT="8080"
+export CUSTOMER_DB_URI="mongodb://localhost:27018"
+export CUSTOMER_DB_NAME="customer-single-view"
+export CUSTOMER_DB_USER="user"
+export CUSTOMER_DB_PASSWORD="password"
 
-go mod tidy
+go run -a *.go
 ```
 
-
-## Run
+## :white_check_mark: Test
 ```shell
-export WORK_DIR="../../";
+curl -vvv http://localhost:8080/api/customers | jq
 
-# k8s node-port
-# export BOOTSTRAP_SERVERS="192.168.64.3:9092"
-export BOOTSTRAP_SERVERS="localhost:9092"
-
-# kubectl port-forward
-export SCHEMA_REGISTRY_URL="http://localhost:8081"
-export TOPIC_NAME="event_customer_entity"
-
-go run *.go \
---key-schema-file ${WORK_DIR}schemas/customer-key.avsc \
---value-schema-file ${WORK_DIR}schemas/customer-value.avsc
 ```
-
-See:
-* https://github.com/confluentinc/confluent-kafka-go
-* https://docs.confluent.io/platform/current/clients/confluent-kafka-go/index.html

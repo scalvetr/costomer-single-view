@@ -1,6 +1,6 @@
 # Datagen
 
-## Build
+## :gear: Build
 Build go program
 ```shell
 go build
@@ -38,7 +38,7 @@ go mod tidy
 ```
 
 
-## Run
+## :rocket: Run
 ```shell
 export WORK_DIR="../../";
 
