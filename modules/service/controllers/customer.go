@@ -3,6 +3,8 @@ package controllers
 import (
 	"context"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 	"math"
 	"strconv"
 	"time"
@@ -15,6 +17,7 @@ import (
 )
 
 func GetAllCustomers(c *fiber.Ctx) error {
+	log.Printf("GetAllCustomers\n")
 	customerCollection := config.MI.DB.Collection("customers")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -86,32 +89,67 @@ func GetAllCustomers(c *fiber.Ctx) error {
 	})
 }
 
+func GetCustomerDetail(c *fiber.Ctx) error {
+	log.Printf("GetCustomerDetail\n")
+	return getCustomer(c, true)
+}
 func GetCustomer(c *fiber.Ctx) error {
+	log.Printf("GetCustomer\n")
+	return getCustomer(c, false)
+}
+
+func getCustomer(c *fiber.Ctx, detail bool) error {
 	customerCollection := config.MI.DB.Collection("customers")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	var customer models.Customer
-	objId, err := primitive.ObjectIDFromHex(c.Params("id"))
-	findResult := customerCollection.FindOne(ctx, bson.M{"_id": objId})
-	if err := findResult.Err(); err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"success": false,
-			"message": "Customer Not found",
-			"error":   err,
+	var findResult *mongo.Cursor
+	var err error
+
+	customerId := c.Params("id")
+	if detail {
+		findResult, err = customerCollection.Aggregate(ctx, mongo.Pipeline{
+			bson.D{{"$match", bson.D{{"_id", customerId}}}},
+			bson.D{{"$lookup", bson.D{
+				{"from", "cases"},
+				{"localField", "_id"},
+				{"foreignField", "customer_id"},
+				{"as", "cases"},
+			}}},
+			bson.D{{"$lookup", bson.D{
+				{"from", "accounts"},
+				{"localField", "_id"},
+				{"foreignField", "customer_id"},
+				{"as", "accounts"},
+			}}},
 		})
+	} else {
+		findResult, err = customerCollection.Find(ctx, bson.M{"_id": customerId})
 	}
 
-	err = findResult.Decode(&customer)
 	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success":      false,
+			"message":      "Customer Not found",
+			"error_type":   "DB_ERROR",
+			"error_detail": err,
+		})
+	}
+	if !findResult.Next(ctx) {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"success": false,
-			"message": "Customer Not found",
-			"error":   err,
+			"success":    false,
+			"message":    "Customer Not found",
+			"error_type": "NOT_FOUND",
+		})
+	}
+	if err := findResult.Decode(&customer); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success":      false,
+			"message":      "Customer Not found",
+			"error_type":   "UNMARSHALL",
+			"error_detail": err,
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    customer,
-		"success": true,
-	})
+	return c.Status(fiber.StatusOK).JSON(customer)
 }

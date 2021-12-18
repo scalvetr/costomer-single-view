@@ -8,4 +8,5 @@ import (
 func CustomersRoute(route fiber.Router) {
 	route.Get("/", controllers.GetAllCustomers)
 	route.Get("/:id", controllers.GetCustomer)
+	route.Get("/:id/detail", controllers.GetCustomerDetail)
 }
