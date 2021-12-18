@@ -47,6 +47,7 @@ WITH (
     'topic.creation.enable'='true',
     --https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-decimal-types
     'decimal.handling.mode'='double',
+    'time.precision.mode'='adaptive',
 
     'value.converter'='io.confluent.connect.avro.AvroConverter',
     'value.converter.schema.registry.url'='http://schema-registry:8081',
