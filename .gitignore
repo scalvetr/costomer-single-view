@@ -33,3 +33,4 @@ terraform.tfvars
 /modules/datagen/datagen
 *.iml
 /modules/datagen/customer_repo
+/modules/service/service

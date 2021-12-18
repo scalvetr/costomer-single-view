@@ -24,10 +24,10 @@ WITH (
     'transforms'='ValueToKey,RenameField',
 
     'transforms.ValueToKey.type'='org.apache.kafka.connect.transforms.ValueToKey',
-    'transforms.ValueToKey.fields'='customerId',
+    'transforms.ValueToKey.fields'='customer_id',
 
     'transforms.RenameField.type'='org.apache.kafka.connect.transforms.ReplaceField$Key',
-    'transforms.RenameField.renames'='customerId:_id'
+    'transforms.RenameField.renames'='customer_id:_id'
 );
 
 CREATE

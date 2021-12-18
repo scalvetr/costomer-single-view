@@ -6,7 +6,7 @@ import (
 )
 
 type CustomerStruct struct {
-	CustomerId string            `json:"customerId,omitempty"`
+	CustomerId string            `json:"customer_id,omitempty"`
 	Name       string            `json:"name,omitempty"`
 	Surname    string            `json:"surname,omitempty"`
 	Email      string            `json:"email,omitempty"`
@@ -19,7 +19,7 @@ type AddressStruct struct {
 	Number  string `json:"number,omitempty"`
 	City    string `json:"city,omitempty"`
 	Country string `json:"country,omitempty"`
-	ZipCode string `json:"zipCode,omitempty"`
+	ZipCode string `json:"zip_code,omitempty"`
 	Default bool   `json:"default"`
 }
 type TelephoneStruct struct {
@@ -45,22 +45,22 @@ func (s AccountStatus) String() string {
 }
 
 type AccountStruct struct {
-	AccountId        int32         `json:"accountId,omitempty" db:"account_id"`
-	CustomerId       string        `json:"customerId,omitempty" db:"customer_id"`
+	AccountId        int32         `json:"account_id,omitempty" db:"account_id"`
+	CustomerId       string        `json:"customer_id,omitempty" db:"customer_id"`
 	IBAN             string        `json:"iban,omitempty" db:"iban"`
 	Balance          float64       `json:"balance,omitempty" db:"balance"`
-	CreationDate     time.Time     `json:"creationDate,omitempty" db:"creation_date"`
-	CancellationDate *time.Time    `json:"cancellationDate,omitempty" db:"cancellation_date"`
+	CreationDate     time.Time     `json:"creation_date,omitempty" db:"creation_date"`
+	CancellationDate *time.Time    `json:"cancellation_date,omitempty" db:"cancellation_date"`
 	Status           AccountStatus `json:"status,omitempty" db:"status"`
 }
 
 type BookingStruct struct {
-	BookingId   int32     `json:"bookingId,omitempty"`
-	AccountId   int32     `json:"accountId,omitempty"`
+	BookingId   int32     `json:"booking_id,omitempty"`
+	AccountId   int32     `json:"account_id,omitempty"`
 	Amount      float64   `json:"amount,omitempty"`
 	Description string    `json:"description,omitempty"`
-	BookingDate time.Time `json:"bookingDate,omitempty"`
-	ValueDate   time.Time `json:"valueDate,omitempty"`
+	BookingDate time.Time `json:"booking_date,omitempty"`
+	ValueDate   time.Time `json:"value_date,omitempty"`
 	Fee         float64   `json:"fee,omitempty"`
 	Taxes       float64   `json:"taxes,omitempty"`
 }

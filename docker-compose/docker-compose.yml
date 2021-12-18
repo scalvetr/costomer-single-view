@@ -80,3 +80,18 @@ services:
       MONGODB_USERNAME: "user"
       MONGODB_PASSWORD: "password"
       MONGODB_DATABASE: "customer-single-view"
+
+  service:
+    image: "service:latest"
+    ports:
+      - "8080:8080"
+    build:
+      context: ../modules/service
+    environment:
+      PORT: "8080"
+      CUSTOMER_DB_URI: "mongodb://mongodb-customer-single-view:27017"
+      CUSTOMER_DB_NAME: "customer-single-view"
+      CUSTOMER_DB_USER: "user"
+      CUSTOMER_DB_PASSWORD: "password"
+    depends_on:
+      - mongodb-customer-single-view

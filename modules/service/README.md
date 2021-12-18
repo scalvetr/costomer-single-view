@@ -1,14 +1,32 @@
-# Datagen
+# Service
 
 ## Build
 Build go program
 ```shell
+cd models
+go mod tidy
+go build
+
+cd ../config
+go mod tidy
+go build
+
+cd ../controllers
+go mod tidy
+go build
+
+cd ../routes
+go mod tidy
+go build
+
+cd ..
+go mod tidy
 go build
 ```
 
 Build docker image
 ```shell
-docker build . -t datagen:latest
+docker build . -t service:latest
 
 # Test
 

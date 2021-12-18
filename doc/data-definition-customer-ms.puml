@@ -7,7 +7,7 @@ yamlDiagram {
 }
 </style>
 
-customerId: String
+customer_id: String
 name: String
 surname: String
 email: String
@@ -19,7 +19,7 @@ addresses:
       number: String
       city: String
       country: String
-      zipCode: String
+      zip_code: String
       default: Boolean
 
 @endyaml
