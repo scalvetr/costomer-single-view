@@ -17,6 +17,21 @@ Gantt Diagram
 
 * [Docker Compose](docker-compose/README.md)
 * [K8S-Terraform](k8s-terraform/README.md)
+## Test
+
+
+## :white_check_mark: Test
+
+```shell
+curl -vvv http://localhost:8080/api/customers | jq
+CUSTOMER_ID="`curl -vvv http://localhost:8080/api/customers | jq -r '.data[0].customer_id'`"
+# CUSTOMER_ID="doris.veum"
+echo "${CUSTOMER_ID}"
+curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}" | jq
+curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}/detail" | jq
+
+```
+
 
 ## Data Definition
 

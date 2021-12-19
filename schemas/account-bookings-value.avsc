@@ -1,0 +1,39 @@
+{
+  "namespace": "edu.uoc.scalvetr",
+  "name": "Account",
+  "type": "record",
+  "fields": [
+    { "name": "account_id", "type": "int" },
+    { "name": "customer_id", "type": "string" },
+    { "name": "iban", "type": "string" },
+    { "name": "balance", "type": "double" },
+    { "name": "creation_date", "type": "long", "logicalType": "timestamp-millis" },
+    { "name": "cancellation_date",
+      "type": [ "null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }]
+    },
+    { "name": "status", "type": "string" },
+    {"name": "bookings", "type":{
+      "type": "array",
+      "items":{
+        "name":"Booking",
+        "type":"record",
+        "fields": [
+          { "name": "booking_id", "type": "int" },
+          { "name": "account_id", "type": "int" },
+          { "name": "amount", "type": "double" },
+          { "name": "description", "type": "string" },
+          { "name": "booking_date", "type": "long", "logicalType": "timestamp-millis" },
+          { "name": "value_date", "type": [ "null", {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }] },
+          { "name": "fee", "type": "double" },
+          { "name": "taxes", "type": "double" }
+        ]
+      }
+    }}
+  ]
+}
