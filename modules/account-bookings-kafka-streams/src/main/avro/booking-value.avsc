@@ -1,0 +1,43 @@
+{
+  "namespace": "edu.uoc.scalvetr",
+  "name": "Booking",
+  "type": "record",
+  "fields": [
+    {
+      "name": "booking_id",
+      "type": "int"
+    },
+    {
+      "name": "account_id",
+      "type": "int"
+    },
+    {
+      "name": "amount",
+      "type": "double"
+    },
+    {
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "name": "booking_date",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "value_date",
+      "type": [ "null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }]
+    },
+    {
+      "name": "fee",
+      "type": "double"
+    },
+    {
+      "name": "taxes",
+      "type": "double"
+    }
+  ]
+}

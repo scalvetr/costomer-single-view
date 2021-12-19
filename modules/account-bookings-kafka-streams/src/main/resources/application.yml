@@ -1,0 +1,25 @@
+config:
+  kafka-brokers: ${KAFKA_BROKERS:localhost:9092}
+  kafka-username: ${KAFKA_USERNAME:}
+  kafka-password: ${KAFKA_PASSWORD:}
+  application-id: ${APPLICATION_ID:kafka-streams-application}
+  schema-registry-url: ${CP_SCHEMA_REGISTRY_URL:http://localhost:8081}
+  topic-accounts: ${KAFKA_TOPIC_ACCOUNTS:event_core_banking_accounts}
+  topic-bookings: ${KAFKA_TOPIC_BOOKINGS:event_core_banking_bookings}
+  topic-account-bookings: ${KAFKA_TOPIC_ACCOUNT_BOOKINGS:event_core_banking_account_bookings}
+
+
+spring:
+  kafka:
+    properties:
+      bootstrap.servers: ${config.kafka-brokers}
+      # set to true if you don't want to register the schemas up front.
+      auto.register.schemas: true
+      schema.registry.url: ${config.schema-registry-url}
+
+    streams:
+      replication-factor: 1
+      application-id: ${config.application-id}
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde

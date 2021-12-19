@@ -34,3 +34,4 @@ terraform.tfvars
 *.iml
 /modules/datagen/customer_repo
 /modules/service/service
+/modules/account-bookings-kafka-streams/target/
