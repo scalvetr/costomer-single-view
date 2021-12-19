@@ -4,7 +4,7 @@
 
 Docker Compose
 
-## Build
+## :gear: Build
 
 Start environment
 
@@ -15,7 +15,8 @@ docker-compose -p tfm \
 -f docker-compose.yml \
 build
 ```
-## Run
+
+## :running_man: Run
 
 Start environment
 

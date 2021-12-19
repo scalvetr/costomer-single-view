@@ -1,6 +1,6 @@
 # Customer Single View
 
-## Project Planning
+## :calendar: Project Planning
 
 Gantt Diagram
 
@@ -11,16 +11,42 @@ Gantt Diagram
 
 ![System Design](doc/system-design.png)
 
-## Environment Setup
+## :framed_picture: Environment Setup
 
-2 Options:
+2 options
 
 * [Docker Compose](docker-compose/README.md)
 * [K8S-Terraform](k8s-terraform/README.md)
-## Test
 
+## :gear: Build
+
+Start environment
+
+```shell
+docker-compose -p tfm \
+-f docker-compose.confluent.yml \
+-f docker-compose.confluent.changes.yml \
+-f docker-compose.yml \
+build
+```
+
+## :running_man: Run
+
+Start environment
+
+```shell
+docker-compose -p tfm \
+-f docker-compose.confluent.yml \
+-f docker-compose.confluent.changes.yml \
+-f docker-compose.yml \
+up -d
+```
 
 ## :white_check_mark: Test
+
+Control center accessible through the following URL: http://localhost:9021/
+
+Test the service layer:
 
 ```shell
 curl -vvv http://localhost:8080/api/customers | jq
@@ -33,7 +59,7 @@ curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}/detail" | jq
 ```
 
 
-## Data Definition
+## :open_book: Data Definition
 
 Sources:
 
