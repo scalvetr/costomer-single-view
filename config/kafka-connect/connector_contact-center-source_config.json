@@ -1,19 +1,22 @@
 {
   "name": "contact-center-source",
   "config": {
-    "value.converter.schema.registry.url": "http://schema-registry:8081",
-    "value.converter.schemas.enable": "true",
-    "key.converter.schema.registry.url": "http://schema-registry:8081",
-    "name": "contact-center-source",
     "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
-    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "transforms": "valueToKey, extractKey",
+    "transforms.valueToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.valueToKey.fields": "case_id",
+    "transforms.extractKey.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractKey.field": "case_id",
     "connection.uri": "mongodb://user:password@mongodb-contact-center/contact-center",
     "database": "contact-center",
     "collection": "cases",
     "publish.full.document.only": "true",
-    "topic.namespace.map": "{\"contact-center\":\"raw_contact_center_default\",\"contact-center.cases\":\"raw_contact_center_customer_cases\"}",
+    "topic.namespace.map": "{\"contact-center\":\"event_contact_center_default\",\"contact-center.cases\":\"event_contact_center_customer_cases\"}",
     "output.format.value": "schema",
-    "output.schema.value": "{\"namespace\":\"edu.uoc.scalvetr\",\"type\":\"record\",\"name\":\"Case\",\"fields\":[{\"name\":\"case_id\",\"type\":\"string\"},{\"name\":\"customer_id\",\"type\":\"string\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"creation_timestamp\",\"type\":\"long\",\"logicalType\":\"timestamp-millis\"},{\"name\":\"communications\",\"type\":{\"type\":\"array\",\"items\":{\"name\":\"Communication\",\"type\":\"record\",\"fields\":[{\"name\":\"communication_id\",\"type\":\"string\"},{\"name\":\"type\",\"type\":\"string\"},{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"notes\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]}}}]}"
+    "output.schema.value": "{\"namespace\":\"edu.uoc.scalvetr\",\"type\":\"record\",\"name\":\"Case\",\"fields\":[{\"name\":\"case_id\",\"type\":\"string\"},{\"name\":\"customer_id\",\"type\":\"string\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"creation_timestamp\",\"type\":\"long\",\"logicalType\":\"timestamp-millis\"},{\"name\":\"communications\",\"type\":{\"type\":\"array\",\"items\":{\"name\":\"Communication\",\"type\":\"record\",\"fields\":[{\"name\":\"communication_id\",\"type\":\"string\"},{\"name\":\"type\",\"type\":\"string\"},{\"name\":\"text\",\"type\":\"string\"},{\"name\":\"notes\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]}}}]}",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schemas.enable": "true"
   }
 }

@@ -30,8 +30,8 @@ rectangle "Input Sources" as inputs {
 
 rectangle "Data Pipelines" as pipelines {
     rectangle "Ingestion Layer\n<<Kafka Connect>>" as ingestion_layer {
-       component "MySql Debezium" as ingest_mysql_debezium
-       component "MongoDb Debezium" as ingest_mongodb_debezium
+       component "DebeziumPostgresConnector" as kafka_connect_postgres_source
+       component "MongoSourceConnector" as kafka_connect_mongo_source
     }
     rectangle "Message Broker\n<<Kafka>>" as message_broker {
         queue "event_customer_entity" as event_customer_entity
@@ -46,7 +46,7 @@ rectangle "Data Pipelines" as pipelines {
     }
 
     rectangle "Egestion Layer\n<<Kafka Connect>>" as egestion_layer {
-       component "MongoDb Debezium" as egest_mongodb_debezium
+       component "MongoSinkConnector" as kafka_connect_mongo_sink
     }
 
 }
@@ -58,20 +58,20 @@ rectangle "Service Layer" as service_layer {
 
 ' sources relations
 ms_customer --> event_customer_entity
-db_core_banking --> ingest_mysql_debezium
-db_contact_center --> ingest_mongodb_debezium
+db_core_banking --> kafka_connect_postgres_source
+db_contact_center --> kafka_connect_mongo_source
 
 ' ingest relations
-ingest_mysql_debezium --> event_core_banking_accounts
-ingest_mysql_debezium --> event_core_banking_bookings
-ingest_mongodb_debezium --> event_contact_center_customer_cases
+kafka_connect_postgres_source --> event_core_banking_accounts
+kafka_connect_postgres_source --> event_core_banking_bookings
+kafka_connect_mongo_source --> event_contact_center_customer_cases
 
-event_customer_entity --> egest_mongodb_debezium
-event_core_banking_account_bookings --> egest_mongodb_debezium
-event_contact_center_customer_cases --> egest_mongodb_debezium
+event_customer_entity --> kafka_connect_mongo_sink
+event_core_banking_account_bookings --> kafka_connect_mongo_sink
+event_contact_center_customer_cases --> kafka_connect_mongo_sink
 
 
-egest_mongodb_debezium --> db_customer_single_view
+kafka_connect_mongo_sink --> db_customer_single_view
 db_customer_single_view --> ms_customer_single_view
 
 

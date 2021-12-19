@@ -1,0 +1,20 @@
+{
+  "name": "event_core_banking_accounts-sink",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "transforms": "ValueToKey, RenameField",
+    "topics": "event_core_banking_accounts",
+    "transforms.ValueToKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.ValueToKey.fields": "account_id",
+    "transforms.RenameField.type": "org.apache.kafka.connect.transforms.ReplaceField$Key",
+    "transforms.RenameField.renames": "account_id:_id",
+    "connection.uri": "mongodb://user:password@mongodb-customer-single-view/customer-single-view",
+    "database": "customer-single-view",
+    "collection": "accounts",
+    "post.processor.chain": "com.mongodb.kafka.connect.sink.processor.DocumentIdAdder",
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInKeyStrategy",
+    "value.converter.schema.registry.url": "http://schema-registry:8081"
+  }
+}
