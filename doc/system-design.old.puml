@@ -1,0 +1,101 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+''!theme aws-orange
+
+<style>
+componentDiagram {
+  BackGroundColor white
+  LineThickness 1
+  LineColor black
+}
+database {
+    BackGroundColor: lightgrey;
+}
+artifact {
+    BackGroundColor: lightgrey;
+}
+component {
+    BackGroundColor: lightgrey;
+}
+queue {
+    BackGroundColor: lightgrey;
+}
+</style>
+
+rectangle "Input Sources" as inputs {
+    artifact "Customer MS" as ms_customer
+    database "Core Banking" as db_core_banking
+    database "Contact Center" as db_contact_center
+}
+
+rectangle "Data Pipelines" as pipelines {
+    rectangle "Ingestion Layer\n<<Kafka Connect>>" as ingestion_layer {
+       component "MySql Debezium" as ingest_mysql_debezium
+       component "MongoDb Debezium" as ingest_mongodb_debezium
+    }
+    rectangle "Message Broker\n<<Kafka>>" as message_broker {
+        queue "event_customer_entity" as event_customer_entity
+        queue "event_core_banking_bookings" as event_core_banking_bookings
+        queue "event_core_banking_accounts" as event_core_banking_accounts
+        queue "event_contact_center_customer_cases" as event_contact_center_customer_cases
+        queue "event_core_banking_account_bookings" as event_core_banking_account_bookings
+    }
+
+    rectangle "Processing Layer" as processing_layer {
+        component "Kafka Streams"
+    }
+
+    rectangle "Egestion Layer\n<<Kafka Connect>>" as egestion_layer {
+       component "MongoDb Debezium" as egest_mongodb_debezium
+    }
+
+}
+
+rectangle "Service Layer" as service_layer {
+    artifact "Customer Single View" as ms_customer_single_view
+    database "Customer Single View" as db_customer_single_view
+}
+
+' sources location
+ms_customer -[hidden]d-> db_core_banking
+db_core_banking -[hidden]d-> db_contact_center
+
+' topics location
+event_customer_entity -[hidden]d-> event_core_banking_accounts
+event_core_banking_accounts -[hidden]d-> event_core_banking_bookings
+event_core_banking_bookings -[hidden]d-> event_contact_center_customer_cases
+event_contact_center_customer_cases -[hidden]d-> event_core_banking_account_bookings
+
+' ingest location
+ingest_mysql_debezium -[hidden]d-> ingest_mongodb_debezium
+
+' layer location
+'ingestion_layer -[hidden]l-> message_broker
+'message_broker -[hidden]l-> egestion_layer
+'message_broker -[hidden]l-> processing_layer
+processing_layer -[hidden]u-> egestion_layer
+
+
+' sources relations
+ms_customer -> event_customer_entity
+db_core_banking -> ingest_mysql_debezium
+db_contact_center -> ingest_mongodb_debezium
+
+' ingest relations
+ingest_mysql_debezium -> event_core_banking_accounts
+ingest_mysql_debezium -> event_core_banking_bookings
+ingest_mongodb_debezium -> event_contact_center_customer_cases
+
+event_customer_entity -> egest_mongodb_debezium
+event_core_banking_account_bookings -> egest_mongodb_debezium
+event_contact_center_customer_cases -> egest_mongodb_debezium
+
+
+egest_mongodb_debezium -> db_customer_single_view
+db_customer_single_view -> ms_customer_single_view
+
+
+message_broker -> processing_layer
+processing_layer -> message_broker
+
+@enduml

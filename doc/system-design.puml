@@ -23,9 +23,9 @@ queue {
 </style>
 
 rectangle "Input Sources" as inputs {
-    artifact "Customer MS" as ms_customer
-    database "Core Banking" as db_core_banking
-    database "Contact Center" as db_contact_center
+    artifact "Customer MS>\n<<ms>>" as ms_customer
+    database "Core Banking\n<<PostgreSQL>>" as db_core_banking
+    database "Contact Center\n<<MongoDB>>" as db_contact_center
 }
 
 rectangle "Data Pipelines" as pipelines {
@@ -34,12 +34,12 @@ rectangle "Data Pipelines" as pipelines {
        component "MongoDb Debezium" as ingest_mongodb_debezium
     }
     rectangle "Message Broker\n<<Kafka>>" as message_broker {
-        queue "event_customer_entity" as topic_customer_entity
-        queue "raw_core_banking_bookings" as topic_core_banking_bookings
-        queue "raw_core_banking_accounts" as topic_core_banking_accounts
-        queue "raw_contact_center_customer_cases" as topic_contact_center_customer_cases
-        queue "EVENT_CUSTOMER_SINGLE_VIEW" as topic_customer_single_view
-       }
+        queue "event_customer_entity" as event_customer_entity
+        queue "event_core_banking_bookings" as event_core_banking_bookings
+        queue "event_core_banking_accounts" as event_core_banking_accounts
+        queue "event_contact_center_customer_cases" as event_contact_center_customer_cases
+        queue "event_core_banking_account_bookings" as event_core_banking_account_bookings
+    }
 
     rectangle "Processing Layer" as processing_layer {
         component "Kafka Streams"
@@ -52,48 +52,30 @@ rectangle "Data Pipelines" as pipelines {
 }
 
 rectangle "Service Layer" as service_layer {
-    artifact "Customer Single View" as ms_customer_single_view
-    database "Customer Single View" as db_customer_single_view
+    artifact "Customer Single View\n<<ms>>" as ms_customer_single_view
+    database "Customer Single View\n<<MongoDB>>" as db_customer_single_view
 }
 
-inputs -[hidden]r-> pipelines
-pipelines -[hidden]r-> service_layer
+' sources relations
+ms_customer --> event_customer_entity
+db_core_banking --> ingest_mysql_debezium
+db_contact_center --> ingest_mongodb_debezium
 
-ingestion_layer -[hidden]r-> message_broker
-message_broker -[hidden]r-> egestion_layer
+' ingest relations
+ingest_mysql_debezium --> event_core_banking_accounts
+ingest_mysql_debezium --> event_core_banking_bookings
+ingest_mongodb_debezium --> event_contact_center_customer_cases
+
+event_customer_entity --> egest_mongodb_debezium
+event_core_banking_account_bookings --> egest_mongodb_debezium
+event_contact_center_customer_cases --> egest_mongodb_debezium
 
 
-ingestion_layer -[hidden]u-> processing_layer
-message_broker -u-> processing_layer
-egestion_layer -[hidden]u-> processing_layer
+egest_mongodb_debezium --> db_customer_single_view
+db_customer_single_view --> ms_customer_single_view
 
-processing_layer -> message_broker
 
-topic_customer_entity -[hidden]d-> topic_core_banking_accounts
-topic_core_banking_accounts -[hidden]d-> topic_core_banking_bookings
-topic_core_banking_bookings -[hidden]d-> topic_contact_center_customer_cases
-topic_customer_single_view -[hidden]d-> topic_customer_entity
-topic_customer_single_view -[hidden]d-> topic_core_banking_bookings
-topic_customer_single_view -[hidden]d-> topic_contact_center_customer_cases
-topic_customer_single_view -[hidden]d-> topic_core_banking_accounts
-
-ms_customer -[hidden]d-> db_core_banking
-db_core_banking -[hidden]d-> db_contact_center
-
-ingest_mysql_debezium -[hidden]d-> ingest_mongodb_debezium
-
-db_core_banking -r-> ingest_mysql_debezium
-db_contact_center -r-> ingest_mongodb_debezium
-
-ms_customer -r-> topic_customer_entity
-ingest_mysql_debezium -r-> topic_core_banking_accounts
-ingest_mysql_debezium -r-> topic_core_banking_bookings
-ingest_mongodb_debezium -r-> topic_contact_center_customer_cases
-
-egest_mongodb_debezium -r-> db_customer_single_view
-topic_customer_single_view -r-> egest_mongodb_debezium
-
-db_customer_single_view -r-> ms_customer_single_view
-
+message_broker --> processing_layer
+processing_layer --> message_broker
 
 @enduml
