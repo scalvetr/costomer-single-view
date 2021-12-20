@@ -1,11 +1,13 @@
 {
-  "namespace": "edu.uoc.scalvetr",
-  "name": "Account",
-  "type": "record",
+  "connect.name": "event_core_banking_accounts.Value",
   "fields": [
     {
+      "default": 0,
       "name": "account_id",
-      "type": "int"
+      "type": {
+        "connect.default": 0,
+        "type": "int"
+      }
     },
     {
       "name": "customer_id",
@@ -21,19 +23,30 @@
     },
     {
       "name": "creation_date",
-      "type": "long",
-      "logicalType": "timestamp-millis"
+      "type": {
+        "connect.name": "io.debezium.time.Timestamp",
+        "connect.version": 1,
+        "type": "long"
+      }
     },
     {
+      "default": null,
       "name": "cancellation_date",
-      "type": [ "null", {
-        "type": "long",
-        "logicalType": "timestamp-millis"
-      }]
+      "type": [
+        "null",
+        {
+          "connect.name": "io.debezium.time.Timestamp",
+          "connect.version": 1,
+          "type": "long"
+        }
+      ]
     },
     {
       "name": "status",
       "type": "string"
     }
-  ]
+  ],
+  "name": "Value",
+  "namespace": "event_core_banking_accounts",
+  "type": "record"
 }

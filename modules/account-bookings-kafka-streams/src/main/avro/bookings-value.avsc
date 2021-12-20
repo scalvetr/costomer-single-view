@@ -1,15 +1,8 @@
 {
   "namespace": "edu.uoc.scalvetr",
-  "name": "AccountBookings",
+  "name": "Bookings",
   "type": "record",
   "fields": [
-    { "name": "account_id", "type": "int" },
-    { "name": "customer_id", "type": "string" },
-    { "name": "iban", "type": "string" },
-    { "name": "balance", "type": "double" },
-    { "name": "creation_date", "type": "long", "logicalType": "timestamp-millis" },
-    { "name": "cancellation_date", "type": [ "null", "long"], "logicalType": "timestamp-millis" },
-    { "name": "status", "type": "string" },
     {"name": "bookings", "type":[ "null", {
       "type": "array",
       "items":{

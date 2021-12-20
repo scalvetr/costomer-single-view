@@ -1,13 +1,12 @@
 config:
   kafka-brokers: ${KAFKA_BROKERS:localhost:9092}
-  kafka-username: ${KAFKA_USERNAME:}
-  kafka-password: ${KAFKA_PASSWORD:}
-  application-id: ${APPLICATION_ID:kafka-streams-application}
-  schema-registry-url: ${CP_SCHEMA_REGISTRY_URL:http://localhost:8081}
+  application-id: ${APPLICATION_ID:account-bookings-kafka-streams}
+  schema-registry-url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
   topic-accounts: ${KAFKA_TOPIC_ACCOUNTS:event_core_banking_accounts}
   topic-bookings: ${KAFKA_TOPIC_BOOKINGS:event_core_banking_bookings}
-  topic-account-bookings: ${KAFKA_TOPIC_ACCOUNT_BOOKINGS:event_core_banking_account_bookings}
-
+  output-topic-name: ${KAFKA_TOPIC_ACCOUNT_BOOKINGS:event_core_banking_account_bookings}
+  output-topic-partitions: ${KAFKA_TOPIC_ACCOUNT_BOOKINGS_PARTITIONS:1}
+  output-topic-replicas: ${KAFKA_TOPIC_ACCOUNT_BOOKINGS_REPLICAS:1}
 
 spring:
   kafka:
