@@ -1,0 +1,20 @@
+FROM ghcr.io/graalvm/graalvm-ce:21.3.0 AS builder
+
+COPY . .
+
+RUN ./mvnw -Pnative -DskipTests package
+
+FROM scratch
+
+ENV KAFKA_BROKERS localhost:9092
+ENV APPLICATION_ID account-bookings-kafka-streams
+ENV SCHEMA_REGISTRY_URL http://localhost:8081
+ENV KAFKA_TOPIC_ACCOUNTS event_core_banking_accounts
+ENV KAFKA_TOPIC_BOOKINGS event_core_banking_bookings
+ENV KAFKA_TOPIC_ACCOUNT_BOOKINGS event_core_banking_account_bookings
+ENV KAFKA_TOPIC_ACCOUNT_BOOKINGS_PARTITIONS 1
+ENV KAFKA_TOPIC_ACCOUNT_BOOKINGS_REPLICAS 1
+
+COPY --from=builder target/account-bookings-kafka-streams .
+
+ENTRYPOINT [ "/account-bookings-kafka-streams" ]

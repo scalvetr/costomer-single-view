@@ -95,3 +95,35 @@ services:
       CUSTOMER_DB_PASSWORD: "password"
     depends_on:
       - mongodb-customer-single-view
+        
+
+  account-bookings-kafka-streams:
+    image: "account-bookings-kafka-streams:latest"
+    #image: "account-bookings-kafka-streams:latest-native"
+    build:
+      context: ../modules/account-bookings-kafka-streams
+      #context: ../modules/account-bookings-kafka-streams/Dockerfile.native
+    environment:
+      KAFKA_BROKERS: broker:29092
+      APPLICATION_ID: account-bookings-kafka-streams
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KAFKA_TOPIC_ACCOUNTS: event_core_banking_accounts
+      KAFKA_TOPIC_BOOKINGS: event_core_banking_bookings
+      KAFKA_TOPIC_ACCOUNT_BOOKINGS: event_core_banking_account_bookings
+      KAFKA_TOPIC_ACCOUNT_BOOKINGS_PARTITIONS: 1
+      KAFKA_TOPIC_ACCOUNT_BOOKINGS_REPLICAS: 1
+    volumes:
+      - "./wait-for-it.sh:/wait-for-it.sh"
+    depends_on:
+      - broker
+      - schema-registry
+      - connect
+      - control-center
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - >
+        /wait-for-it.sh ksqldb-server:8088 -s -t 120 --
+        /wait-for-it.sh schema-registry:8081 -s -t 60 --
+        /wait-for-it.sh connect:8083 -s -t 120 --
+        java org.springframework.boot.loader.JarLauncher
