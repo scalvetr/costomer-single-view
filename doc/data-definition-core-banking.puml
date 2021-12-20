@@ -17,11 +17,11 @@ classDiagram {
 entity "ACCOUNTS" as accounts {
 * account_id : NUMBER <<generated>>
 ---
-* customer_id : VARCHAR(20)
+* customer_id : VARCHAR(50)
 iban : VARCHAR(35)
 balance : NUMBER(20,3)
-creation_date : DATE
-cancellation_date : DATE
+creation_date : TIMESTAMP(3)
+cancellation_date : TIMESTAMP(3)
 status : VARCHAR(10)
 }
 
@@ -30,8 +30,8 @@ entity "BOOKINGS" as bookings {
 ---
 * amount : NUMBER(20,3)
 description : VARCHAR(250)
-booking_date : DATE
-value_date : DATE
+booking_date : TIMESTAMP(3)
+value_date : TIMESTAMP(3)
 fee : NUMBER(20,3)
 taxes : NUMBER(20,3)
 }
