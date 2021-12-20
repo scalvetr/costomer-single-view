@@ -1,56 +1,23 @@
 {
   "title": "case",
-  "required": [
-    "_id",
-    "case_id",
-    "customer_id",
-    "title",
-    "creation_timestamp"
-  ],
+  "required": [ "_id", "case_id", "customer_id", "title", "creation_timestamp" ],
   "properties": {
-    "_id": {
-      "bsonType": "objectId"
-    },
-    "case_id": {
-      "bsonType": "string"
-    },
-    "customer_id": {
-      "bsonType": "string"
-    },
-    "title": {
-      "bsonType": "string"
-    },
-    "creation_timestamp": {
-      "bsonType": "string",
-      "format": "date-time"
-    },
+    "_id": { "jsonType": "objectId" },
+    "case_id": { "jsonType": "string" },
+    "customer_id": { "jsonType": "string" },
+    "title": { "jsonType": "string" },
+    "creation_timestamp": { "jsonType": "string", "format": "date-time" },
     "communications": {
-      "bsonType": "array",
+      "jsonType": "array",
       "items": {
-        "bsonType": "object",
-        "required": [
-          "communication_id",
-          "type",
-          "text",
-          "notes"
-        ],
+        "jsonType": "object",
+        "required": [ "communication_id", "type", "text", "notes" ],
         "properties": {
-          "communication_id": {
-            "bsonType": "string"
-          },
-          "type": {
-            "bsonType": "string"
-          },
-          "text": {
-            "bsonType": "string"
-          },
-          "notes": {
-            "bsonType": "string"
-          },
-          "timestamp": {
-            "bsonType": "string",
-            "format": "date-time"
-          }
+          "communication_id": { "jsonType": "string" },
+          "type": { "jsonType": "string" },
+          "text": { "jsonType": "string" },
+          "notes": { "jsonType": "string" },
+          "timestamp": { "jsonType": "string", "format": "date-time" }
         }
       }
     }
