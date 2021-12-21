@@ -33,7 +33,7 @@ rectangle "Data Pipelines" as pipelines {
        component "DebeziumPostgresConnector" as kafka_connect_postgres_source
        component "MongoSourceConnector" as kafka_connect_mongo_source
     }
-    rectangle "Message Broker\n<<Kafka>>" as message_broker {
+    rectangle "Event Broker\n<<Kafka>>" as event_broker {
         queue "event_customer_entity" as event_customer_entity
         queue "event_core_banking_bookings" as event_core_banking_bookings
         queue "event_core_banking_accounts" as event_core_banking_accounts
@@ -75,7 +75,7 @@ kafka_connect_mongo_sink --> db_customer_single_view
 db_customer_single_view --> ms_customer_single_view
 
 
-message_broker --> processing_layer
-processing_layer --> message_broker
+event_broker --> processing_layer
+processing_layer --> event_broker
 
 @enduml
