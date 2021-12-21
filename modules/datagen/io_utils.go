@@ -23,21 +23,6 @@ func ReadFile(schemaName string) string {
 	//fmt.Println(avroSchema)
 	return avroSchema
 }
-func ReadJson(fileName string) []CustomerStruct {
-	log.Printf("readData: ioutil.ReadFile\n")
-	fileBytes, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var data []CustomerStruct
-
-	log.Printf("readData: json.Unmarshal\n")
-	err = json.Unmarshal(fileBytes, &data)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return data
-}
 
 func ToMap(customer CustomerStruct) map[string]interface{} {
 	log.Printf("readData: ioutil.ReadFile\n")

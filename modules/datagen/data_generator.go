@@ -16,22 +16,23 @@ const capacity = 1000
 
 var customers = new([capacity]CustomerStruct)
 
-type CustomerRepo struct {
+type DataGenerator struct {
 	coreBankingRepo   CoreBankingRepo
 	contactCenterRepo ContactCenterRepo
 	random            *rand.Rand
 	faker             faker.Faker
 }
 
-func BuildCustomerRepo(dbConfig PgDbConfig, mongoConfig MongoDbConfig) CustomerRepo {
-	return CustomerRepo{
+func BuildDataGenerator(dbConfig PgDbConfig, mongoConfig MongoDbConfig) DataGenerator {
+	return DataGenerator{
 		coreBankingRepo:   BuildCoreBankingRepo(dbConfig),
 		contactCenterRepo: BuildContactCenterRepo(mongoConfig),
 		random:            rand.New(rand.NewSource(22)),
 		faker:             faker.New(),
 	}
 }
-func (r CustomerRepo) buildCustomer() CustomerStruct {
+
+func (g DataGenerator) generateCustomer() CustomerStruct {
 	faker := faker.New()
 	firstName := faker.Person().FirstName()
 	lastName := faker.Person().LastName()
@@ -56,17 +57,13 @@ func (r CustomerRepo) buildCustomer() CustomerStruct {
 			},
 		},
 	}
-	//var data CustomerStruct
-	//err := faker.FakeData(&data)
-	//if err != nil {
-	//	panic(err)
-	//}
 	return data
 }
 
-func (r CustomerRepo) NextCustomer() (CustomerStruct, bool) {
+func (g DataGenerator) NextCustomer() (CustomerStruct, bool) {
+	// until the array reaches its capacity
 	if length < capacity {
-		data := r.buildCustomer()
+		data := g.generateCustomer()
 		customers[length] = data
 		length++
 		return data, true
@@ -74,16 +71,16 @@ func (r CustomerRepo) NextCustomer() (CustomerStruct, bool) {
 		createNew := rand.Int()%2 == 0
 		index := rand.Intn(length - 1)
 		if createNew {
-			customers[index] = r.buildCustomer()
+			customers[index] = g.generateCustomer()
 		}
 		return customers[index], true
 	}
 }
 
-func (r CustomerRepo) NextAccount(customer CustomerStruct) AccountStruct {
+func (g DataGenerator) NextAccount(customer CustomerStruct) AccountStruct {
 	createNew := rand.Int()%2 == 0
 	if !createNew {
-		account := r.coreBankingRepo.GetOpenAccount(customer.CustomerId)
+		account := g.coreBankingRepo.GetOpenAccount(customer.CustomerId)
 		if account != nil {
 			log.Printf("return an existing account with id (%v)\n", account.AccountId)
 			return *account
@@ -91,7 +88,7 @@ func (r CustomerRepo) NextAccount(customer CustomerStruct) AccountStruct {
 	}
 	log.Printf("Creating a new one for customer %v\n", customer.CustomerId)
 	faker := faker.New()
-	account := r.coreBankingRepo.StoreAccount(AccountStruct{
+	account := g.coreBankingRepo.StoreAccount(AccountStruct{
 		CustomerId:       customer.CustomerId,
 		AccountId:        0,
 		Balance:          0,
@@ -103,30 +100,28 @@ func (r CustomerRepo) NextAccount(customer CustomerStruct) AccountStruct {
 	return account
 }
 
-func (r CustomerRepo) CreateBooking(account AccountStruct) BookingStruct {
+func (g DataGenerator) NextBooking(account AccountStruct) BookingStruct {
 	accountId := account.AccountId
-	amount := r.random.Float64() * 10.000
+	amount := g.random.Float64() * 10.000
 
-	booking := r.coreBankingRepo.StoreBooking(BookingStruct{
+	booking := g.coreBankingRepo.StoreBooking(BookingStruct{
 		BookingId:   0,
 		AccountId:   accountId,
 		Amount:      amount,
-		Description: r.faker.Lorem().Sentence(r.random.Intn(15)),
+		Description: g.faker.Lorem().Sentence(g.random.Intn(15)),
 		BookingDate: time.Now(),
 		ValueDate:   time.Now(),
 		Fee:         0.0,
 		Taxes:       0.0,
 	})
-	r.coreBankingRepo.UpdateAccountBalance(accountId, account.Balance+booking.Amount)
-
+	g.coreBankingRepo.UpdateAccountBalance(accountId, account.Balance+booking.Amount)
 	return booking
-
 }
 
-func (r CustomerRepo) NextCase(customer CustomerStruct) CaseStruct {
+func (g DataGenerator) NextCase(customer CustomerStruct) CaseStruct {
 	createNew := rand.Int()%2 == 0
 	if !createNew {
-		c := r.contactCenterRepo.GetOpenCase(customer.CustomerId)
+		c := g.contactCenterRepo.GetOpenCase(customer.CustomerId)
 		if c != nil {
 			log.Printf("return an existing account with id (%v)\n", customer.CustomerId)
 			return *c
@@ -135,32 +130,32 @@ func (r CustomerRepo) NextCase(customer CustomerStruct) CaseStruct {
 	c := CaseStruct{
 		CaseId:            uuid.New().String(),
 		CustomerId:        customer.CustomerId,
-		Title:             r.faker.Lorem().Sentence(r.random.Intn(15)),
+		Title:             g.faker.Lorem().Sentence(g.random.Intn(15)),
 		CreationTimestamp: primitive.NewDateTimeFromTime(time.Now()),
 		Communications:    []CaseCommunicationStruct{},
 	}
 	return c
 }
 
-func (r CustomerRepo) CreateCommunication(c CaseStruct) (primitive.ObjectID, CaseCommunicationStruct) {
+func (g DataGenerator) NextCommunication(c CaseStruct) (primitive.ObjectID, CaseCommunicationStruct) {
 	communication := CaseCommunicationStruct{
 		CommunicationId: uuid.New().String(),
-		Text:            r.faker.Lorem().Sentence(r.random.Intn(15)),
-		Type:            r.faker.RandomStringElement([]string{"Mobile", "Web", "Phone"}),
-		Notes:           r.faker.Lorem().Sentence(r.random.Intn(25)),
+		Text:            g.faker.Lorem().Sentence(g.random.Intn(15)),
+		Type:            g.faker.RandomStringElement([]string{"Mobile", "Web", "Phone"}),
+		Notes:           g.faker.Lorem().Sentence(g.random.Intn(25)),
 		Timestamp:       primitive.NewDateTimeFromTime(time.Now()),
 	}
 	c.Communications = append(c.Communications, communication)
-	caseId := r.contactCenterRepo.StoreCase(c)
+	caseId := g.contactCenterRepo.StoreCase(c)
 	return caseId, communication
 }
 
-func (r CustomerRepo) Close() {
-	err := r.contactCenterRepo.Close()
+func (g DataGenerator) Close() {
+	err := g.contactCenterRepo.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = r.coreBankingRepo.Close()
+	err = g.coreBankingRepo.Close()
 	if err != nil {
 		log.Fatal(err)
 	}

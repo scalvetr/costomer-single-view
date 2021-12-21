@@ -53,7 +53,7 @@ func main() {
 	}
 	defer kafkaProducer.Close()
 
-	repo := BuildCustomerRepo(PgDbConfig{
+	dataGen := BuildDataGenerator(PgDbConfig{
 		DbHost:     coreBankingDbHost,
 		DbPort:     coreBankingDbPort,
 		DbUser:     coreBankingDbUser,
@@ -65,30 +65,33 @@ func main() {
 		DbPassword: contactCenterDbPassword,
 		DbName:     contactCenterDbName,
 	})
-	defer repo.Close()
+	defer dataGen.Close()
 
 	for {
 		// Dummy: ms-customer -> produce to kafka
-		customer, isNew := repo.NextCustomer()
+
+		// return a customer, it can be either a newly generated one or a previous one
+		customer, isNew := dataGen.NextCustomer()
 		log.Printf("NextCustomer() = %v, %v\n", customer, isNew)
 		if isNew {
 			kafkaProducer.ProduceCustomer(customer)
 			log.Printf("ProduceCustomer(%v)\n", customer)
 		}
 		time.Sleep(time.Second * 1)
+
 		// Dummy: core banking -> produce to postgresql
-		account := repo.NextAccount(customer)
+		account := dataGen.NextAccount(customer)
 		log.Printf("NextAccount(%v) = %v\n", customer, account)
 		time.Sleep(time.Second * 1)
-		booking := repo.CreateBooking(account)
-		log.Printf("CreateBooking(%v) = %v\n", account, booking)
+		booking := dataGen.NextBooking(account)
+		log.Printf("NextBooking(%v) = %v\n", account, booking)
 		time.Sleep(time.Second * 1)
 
 		// Dummy: Contact Center -> produce to MySql
-		c := repo.NextCase(customer)
+		c := dataGen.NextCase(customer)
 		log.Printf("NextCase(%v) = case_id: %v, _id= %v\n", customer.CustomerId, c.CaseId, c.ID)
 		time.Sleep(time.Second * 1)
-		id, communication := repo.CreateCommunication(c)
-		log.Printf("CreateCommunication(%v) = _id=%v, communication=%s\n", c.CaseId, id, communication)
+		id, communication := dataGen.NextCommunication(c)
+		log.Printf("NextCommunication(%v) = _id=%v, communication=%s\n", c.CaseId, id, communication)
 	}
 }
