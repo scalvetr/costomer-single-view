@@ -1,4 +1,4 @@
-# Customer Single View
+# Single Customer View
 
 ## :calendar: Project Planning
 
