@@ -23,7 +23,7 @@ queue {
 </style>
 
 rectangle "Input Sources" as inputs {
-    artifact "Customer MS>\n<<ms>>" as ms_customer
+    artifact "Customer MS\n<<ms>>" as ms_customer
     database "Core Banking\n<<PostgreSQL>>" as db_core_banking
     database "Contact Center\n<<MongoDB>>" as db_contact_center
 }
