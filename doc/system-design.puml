@@ -43,6 +43,7 @@ rectangle "Data Pipelines" as pipelines {
 
     rectangle "Processing Layer" as processing_layer {
         component "Kafka Streams"
+        component "ksqlDB"
     }
 
     rectangle "Egestion Layer\n<<Kafka Connect>>" as egestion_layer {
