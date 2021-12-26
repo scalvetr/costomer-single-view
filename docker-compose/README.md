@@ -4,6 +4,12 @@
 
 Docker Compose
 
+Download confluent docker compose file
+```shell
+curl --silent --output docker-compose.confluent.yml \
+  https://raw.githubusercontent.com/confluentinc/cp-all-in-one/7.0.1-post/cp-all-in-one/docker-compose.yml
+```
+
 ## :gear: Build
 
 Start environment
