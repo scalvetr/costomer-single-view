@@ -1,4 +1,4 @@
-FROM ghcr.io/graalvm/dive:21.3.0 AS builder
+FROM ghcr.io/graalvm/graalvm-ce:java17-21.3.0 AS builder
 
 COPY . .
 
@@ -16,7 +16,5 @@ ENV KAFKA_TOPIC_ACCOUNT_BOOKINGS_PARTITIONS 1
 ENV KAFKA_TOPIC_ACCOUNT_BOOKINGS_REPLICAS 1
 
 COPY --from=builder target/account-bookings-kafka-streams /usr/bin/account-bookings-kafka-streams
-COPY --from=builder /opt/graalvm/jre/lib/amd64/libsunec.so /libsunec.so
-COPY --from=builder /opt/graalvm/jre/lib/security/cacerts /cacerts
 
 ENTRYPOINT [ "/usr/bin/account-bookings-kafka-streams" ]

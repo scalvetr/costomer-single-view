@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("config")
 @Data
 public class KafkaStreamsApplicationProperties {
-
     private String kafkaBrokers;
     private String applicationId;
     private String schemaRegistryUrl;
@@ -15,5 +14,4 @@ public class KafkaStreamsApplicationProperties {
     private String outputTopicName;
     private int outputTopicPartitions = 1;
     private int outputTopicReplicas = 1;
-
 }
