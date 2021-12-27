@@ -29,7 +29,7 @@ func ConnectDB() {
 
 	dbConfig := MongoDbConfig{
 		DbUri:      GetEnv("CUSTOMER_DB_URI", "mongodb://localhost:27018"),
-		DbName:     GetEnv("CUSTOMER_DB_NAME", "customer-single-view"),
+		DbName:     GetEnv("CUSTOMER_DB_NAME", "single-customer-view"),
 		DbUser:     GetEnv("CUSTOMER_DB_USER", "user"),
 		DbPassword: GetEnv("CUSTOMER_DB_PASSWORD", "password"),
 	}

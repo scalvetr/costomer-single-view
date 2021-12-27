@@ -19,7 +19,7 @@ docker run --rm --name=datagen datagen:latest
 ```shell
 export PORT="8080"
 export CUSTOMER_DB_URI="mongodb://localhost:27018"
-export CUSTOMER_DB_NAME="customer-single-view"
+export CUSTOMER_DB_NAME="single-customer-view"
 export CUSTOMER_DB_USER="user"
 export CUSTOMER_DB_PASSWORD="password"
 

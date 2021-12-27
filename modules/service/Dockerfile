@@ -35,7 +35,7 @@ COPY --from=build-env /go/bin/app /go/bin/app
 # Run
 ENV PORT="8080"
 ENV CUSTOMER_DB_URI="mongodb://localhost:27018"
-ENV CUSTOMER_DB_NAME="customer-single-view"
+ENV CUSTOMER_DB_NAME="single-customer-view"
 ENV CUSTOMER_DB_USER="user"
 ENV CUSTOMER_DB_PASSWORD="password"
 

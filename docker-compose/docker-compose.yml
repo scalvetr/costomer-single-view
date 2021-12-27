@@ -70,7 +70,7 @@ services:
       MONGODB_REPLICA_SET_MODE: "primary"
       MONGODB_REPLICA_SET_KEY: "contactCenterRs1"
 
-  mongodb-customer-single-view:
+  mongodb-single-customer-view:
     image: "bitnami/mongodb:4.4.10-debian-10-r44"
     ports:
       - "27018:27017"
@@ -79,7 +79,7 @@ services:
       MONGODB_ROOT_PASSWORD: "admin"
       MONGODB_USERNAME: "user"
       MONGODB_PASSWORD: "password"
-      MONGODB_DATABASE: "customer-single-view"
+      MONGODB_DATABASE: "single-customer-view"
 
   service:
     image: "service:latest"
@@ -89,21 +89,21 @@ services:
       context: ../modules/service
     environment:
       PORT: "8080"
-      CUSTOMER_DB_URI: "mongodb://mongodb-customer-single-view:27017"
-      CUSTOMER_DB_NAME: "customer-single-view"
+      CUSTOMER_DB_URI: "mongodb://mongodb-single-customer-view:27017"
+      CUSTOMER_DB_NAME: "single-customer-view"
       CUSTOMER_DB_USER: "user"
       CUSTOMER_DB_PASSWORD: "password"
     depends_on:
-      - mongodb-customer-single-view
+      - mongodb-single-customer-view
         
 
   account-bookings-kafka-streams:
-    #image: "account-bookings-kafka-streams:latest"
-    image: "account-bookings-kafka-streams:latest-native"
+    image: "account-bookings-kafka-streams:latest"
+    #image: "account-bookings-kafka-streams:latest-native"
     build:
       context: ../modules/account-bookings-kafka-streams
-      #dockerfile: Dockerfile
-      dockerfile: Dockerfile.native
+      dockerfile: Dockerfile
+      #dockerfile: Dockerfile.native
     environment:
       KAFKA_BROKERS: broker:29092
       APPLICATION_ID: account-bookings-kafka-streams
@@ -127,4 +127,6 @@ services:
         /wait-for-it.sh ksqldb-server:8088 -s -t 120 --
         /wait-for-it.sh schema-registry:8081 -s -t 60 --
         /wait-for-it.sh connect:8083 -s -t 120 --
-        /usr/bin/account-bookings-kafka-streams
+        sleep 10;java org.springframework.boot.loader.JarLauncher
+
+      #/usr/bin/account-bookings-kafka-streams

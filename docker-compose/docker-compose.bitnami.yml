@@ -68,7 +68,7 @@ services:
       MONGODB_REPLICA_SET_MODE: "primary"
       MONGODB_REPLICA_SET_KEY: "contactCenterRs1"
 
-  mongodb-customer-single-view:
+  mongodb-single-customer-view:
     image: "bitnami/mongodb:4.4.10-debian-10-r44"
     ports:
       - "27018:27017"
@@ -77,4 +77,4 @@ services:
       MONGODB_ROOT_PASSWORD: "admin"
       MONGODB_USERNAME: "user"
       MONGODB_PASSWORD: "password"
-      MONGODB_DATABASE: "customer-single-view"
+      MONGODB_DATABASE: "single-customer-view"

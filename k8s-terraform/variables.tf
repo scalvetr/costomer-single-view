@@ -22,12 +22,12 @@ variable "k8s_cluster_ca_certificate" {
 
 variable "k8s_project_label" {
   type = string
-  default = "customer-single-view"
+  default = "single-customer-view"
 }
 
 variable "k8s_namespace" {
   type = string
-  default = "customer-single-view"
+  default = "single-customer-view"
 }
 
 variable "confluent_platform_version" {

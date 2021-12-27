@@ -274,8 +274,8 @@ resource "helm_release" "mongodb-contact-center" {
   }
 }
 
-resource "helm_release" "mongodb-customer-single-view" {
-  name       = "mongodb-customer-single-view"
+resource "helm_release" "mongodb-single-customer-view" {
+  name       = "mongodb-single-customer-view"
 
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "mongodb"
