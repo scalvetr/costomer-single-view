@@ -99,15 +99,19 @@ func GetCustomer(c *fiber.Ctx) error {
 }
 
 func getCustomer(c *fiber.Ctx, detail bool) error {
+	// mongo collection and context
 	customerCollection := config.MI.DB.Collection("customers")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
+	// define variables
 	var customer models.Customer
 	var findResult *mongo.Cursor
 	var err error
 
+	// get request param
 	customerId := c.Params("id")
 	if detail {
+		// if get customer detail (cases and accounts)
 		findResult, err = customerCollection.Aggregate(ctx, mongo.Pipeline{
 			bson.D{{"$match", bson.D{{"_id", customerId}}}},
 			bson.D{{"$lookup", bson.D{
@@ -127,6 +131,7 @@ func getCustomer(c *fiber.Ctx, detail bool) error {
 		findResult, err = customerCollection.Find(ctx, bson.M{"_id": customerId})
 	}
 
+	// error handling
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success":      false,
@@ -135,6 +140,7 @@ func getCustomer(c *fiber.Ctx, detail bool) error {
 			"error_detail": err,
 		})
 	}
+	// try to move the cursor to first position
 	if !findResult.Next(ctx) {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success":    false,
@@ -142,6 +148,7 @@ func getCustomer(c *fiber.Ctx, detail bool) error {
 			"error_type": "NOT_FOUND",
 		})
 	}
+	// try marshall from mongo cursor to object
 	if err := findResult.Decode(&customer); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success":      false,
@@ -151,5 +158,6 @@ func getCustomer(c *fiber.Ctx, detail bool) error {
 		})
 	}
 
+	// unmarshall to JSON
 	return c.Status(fiber.StatusOK).JSON(customer)
 }

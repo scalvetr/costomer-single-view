@@ -31,9 +31,10 @@ go run -a *.go
 
 curl -vvv http://localhost:8080/api/customers | jq
 CUSTOMER_ID="`curl -vvv http://localhost:8080/api/customers | jq -r '.data[0].customer_id'`"
-CUSTOMER_ID="doris.veum"
+CUSTOMER_ID="mattie.waelchi"
 echo "${CUSTOMER_ID}"
 curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}" | jq
+CUSTOMER_ID="mattie.waelchi"
 curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}/detail" | jq
 
 ```
