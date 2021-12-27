@@ -1,0 +1,65 @@
+{
+  "title": "customer",
+  "required": [ "_id", "customer_id", "name", "surname", "email" ],
+  "properties": {
+    "_id": { "jsonType": "objectId" },
+    "customer_id": { "jsonType": "string" },
+    "name": { "jsonType": "string" },
+    "surname": { "jsonType": "string" },
+    "email": { "jsonType": "string" },
+    "telephones": {
+      "jsonType": "array",
+      "items": {
+        "jsonType": "object",
+        "required": [ "number", "primary" ],
+        "properties": {
+          "number": { "jsonType": "string" },
+          "primary": { "jsonType": "boolean" }
+        }
+      }
+    },
+    "addresses": {
+      "jsonType": "array",
+      "items": {
+        "jsonType": "object",
+        "required": [ "street", "number", "city", "country", "zip_code", "default" ],
+        "properties": {
+          "street": { "jsonType": "string" },
+          "number": { "jsonType": "string" },
+          "city": { "jsonType": "string" },
+          "country": { "jsonType": "string" },
+          "zip_code": { "jsonType": "string" },
+          "default": { "jsonType": "boolean" }
+        }
+      },
+      "cases": {
+        "jsonType": "array",
+        "items": {
+          "required": [ "_id", "case_id", "customer_id", "title", "creation_timestamp" ],
+          "properties": {
+            "_id": { "jsonType": "objectId" },
+            "case_id": { "jsonType": "string" },
+            "customer_id": { "jsonType": "string" },
+            "title": { "jsonType": "string" },
+            "creation_timestamp": { "jsonType": "string", "format": "date-time" },
+            "communications": {
+              "jsonType": "array",
+              "items": {
+                "jsonType": "object",
+                "required": [ "communication_id", "type", "text", "notes" ],
+                "properties": {
+                  "communication_id": { "jsonType": "string" },
+                  "type": { "jsonType": "string" },
+                  "text": { "jsonType": "string" },
+                  "notes": { "jsonType": "string" },
+                  "timestamp": { "jsonType": "string", "format": "date-time" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

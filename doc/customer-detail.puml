@@ -1,0 +1,52 @@
+@startyaml
+<style>
+yamlDiagram {
+  BackGroundColor white
+  LineThickness 1
+  LineColor black
+}
+</style>
+
+customer_id: string
+name: string
+surname: string
+email: string
+telephones:
+    - number: string
+      primary: boolean
+addresses:
+    - street: string
+      number: string
+      city: string
+      country: string
+      zip_code: string
+      default: boolean
+cases:
+    - case_id: string
+      customer_id: string
+      title: string
+      creation_timestamp: date-time
+      communications:
+          - communication_id: string
+            timestamp: date-time
+            type: [phone, email]
+            text: string
+            notes: string
+accounts:
+    - account_id: string
+      customer_id: string
+      iban: string
+      balance: number
+      creation_date: date-time
+      cancellation_date: date-time
+      status: string
+      bookings:
+          - booking_id: string
+            amount: number
+            description:string
+            booking_date: date-time
+            value_date: date-time
+            fee: number
+            taxes: number
+
+@endyaml
