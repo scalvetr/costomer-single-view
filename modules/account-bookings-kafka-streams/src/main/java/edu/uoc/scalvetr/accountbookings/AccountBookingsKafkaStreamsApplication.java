@@ -95,13 +95,13 @@ public class AccountBookingsKafkaStreamsApplication {
         // configure Serdes
         final Serde<String> stringSerde = Serdes.String();
         final Serde<event_core_banking_accounts.Value> accountSerde = new SpecificAvroSerde<>();
-        accountSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), true);
+        accountSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), false);
         final Serde<event_core_banking_bookings.Value> bookingSerde = new SpecificAvroSerde<>();
-        bookingSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), true);
+        bookingSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), false);
         final Serde<AccountBookings> accountBookingsSerde = new SpecificAvroSerde<>();
-        accountBookingsSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), true);
+        accountBookingsSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), false);
         final Serde<Bookings> bookingsSerde = new SpecificAvroSerde<>();
-        bookingsSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), true);
+        bookingsSerde.configure(Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaRegistryUrl()), false);
 
         // aggregate bookings in the bookings stream by account id
         KStream<String, event_core_banking_bookings.Value> bookingKStream = builder.stream(properties.getTopicBookings(), Consumed.with(stringSerde, bookingSerde));
