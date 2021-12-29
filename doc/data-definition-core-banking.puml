@@ -37,5 +37,6 @@ taxes : NUMBER(20,3)
 }
 
 accounts ||..o{ bookings
+accounts -r[hidden]-> bookings
 
 @enduml

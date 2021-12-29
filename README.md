@@ -20,7 +20,7 @@ Gantt Diagram
 
 ## :gear: Build
 
-Start environment
+Build modules (datagen, account-bookings-kafka-streams and service)
 
 ```shell
 docker-compose -p tfm \
@@ -49,13 +49,15 @@ Control center accessible through the following URL: http://localhost:9021/
 Test the service layer:
 
 ```shell
+# list all customers
 curl -vvv http://localhost:8080/api/customers | jq
+# store a sample customer_id
 CUSTOMER_ID="`curl -vvv http://localhost:8080/api/customers | jq -r '.data[0].customer_id'`"
-# CUSTOMER_ID="doris.veum"
 echo "${CUSTOMER_ID}"
+# get the customer (only basic info)
 curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}" | jq
+# get the customer detail (with cases and accounts)
 curl -vvv "http://localhost:8080/api/customers/${CUSTOMER_ID}/detail" | jq
-
 ```
 
 
